@@ -6,15 +6,15 @@ import ru.mipt.bit.platformer.util.Direction;
 
 public class TankInputHandler {
 
-    private final Tank tank;
+    private final TankModel tank;
     private final List<TankInputAction> actions = new ArrayList<>();
 
-    public TankInputHandler(Tank tank) {
+    public TankInputHandler(TankModel tank) {
         this.tank = tank;
         registerDirectionalMovement();
     }
 
-    public void handleInput(Iterable<Tree> obstacles) {
+    public void handleInput(Iterable<TreeModel> obstacles) {
         for (TankInputAction action : actions) {
             if (action.isPressed()) {
                 action.execute(tank, obstacles);
@@ -29,7 +29,7 @@ public class TankInputHandler {
     public interface TankInputAction {
         boolean isPressed();
 
-        void execute(Tank tank, Iterable<Tree> obstacles);
+        void execute(TankModel tank, Iterable<TreeModel> obstacles);
     }
 
     private void registerDirectionalMovement() {
@@ -52,8 +52,8 @@ public class TankInputHandler {
         }
 
         @Override
-        public void execute(Tank tank, Iterable<Tree> obstacles) {
-            tank.tryMove(direction, obstacles);
+        public void execute(TankModel tank, Iterable<TreeModel> obstacles) {
+            tank.attemptMove(direction, obstacles);
         }
     }
 }

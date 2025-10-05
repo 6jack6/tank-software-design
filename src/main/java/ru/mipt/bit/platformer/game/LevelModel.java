@@ -1,7 +1,5 @@
 package ru.mipt.bit.platformer.game;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.maps.MapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -9,21 +7,22 @@ import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.utils.Disposable;
 import ru.mipt.bit.platformer.util.TileMovement;
 
-import static ru.mipt.bit.platformer.util.GdxGameUtils.createSingleLayerMapRenderer;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.getSingleLayer;
 
-public class Level implements Disposable {
+public class LevelModel implements Disposable {
 
     private final TiledMap map;
-    private final MapRenderer renderer;
     private final TiledMapTileLayer groundLayer;
     private final TileMovement tileMovement;
 
-    public Level(String mapPath, Batch batch, Interpolation interpolation) {
+    public LevelModel(String mapPath, Interpolation interpolation) {
         map = new TmxMapLoader().load(mapPath);
-        renderer = createSingleLayerMapRenderer(map, batch);
         groundLayer = getSingleLayer(map);
         tileMovement = new TileMovement(groundLayer, interpolation);
+    }
+
+    public TiledMap getMap() {
+        return map;
     }
 
     public TiledMapTileLayer getGroundLayer() {
@@ -34,15 +33,8 @@ public class Level implements Disposable {
         return tileMovement;
     }
 
-    public void render() {
-        renderer.render();
-    }
-
     @Override
     public void dispose() {
         map.dispose();
-        if (renderer instanceof Disposable) {
-            ((Disposable) renderer).dispose();
-        }
     }
 }
