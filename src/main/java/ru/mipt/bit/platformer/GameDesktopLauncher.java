@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import ru.mipt.bit.platformer.game.Level;
 import ru.mipt.bit.platformer.game.Tank;
+import ru.mipt.bit.platformer.game.TankInputHandler;
 import ru.mipt.bit.platformer.game.Tree;
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
@@ -23,6 +24,7 @@ public class GameDesktopLauncher implements ApplicationListener {
     private Batch batch;
     private Level level;
     private Tank playerTank;
+    private TankInputHandler tankInputHandler;
     private Tree treeObstacle;
     private List<Tree> obstacles;
 
@@ -33,6 +35,7 @@ public class GameDesktopLauncher implements ApplicationListener {
         level = new Level("level.tmx", batch, Interpolation.smooth);
         playerTank = new Tank("images/tank_blue.png", new GridPoint2(1, 1),
                 level.getTileMovement(), level.getGroundLayer(), MOVEMENT_SPEED);
+        tankInputHandler = new TankInputHandler(playerTank);
 
         treeObstacle = new Tree("images/greenTree.png", new GridPoint2(1, 3), level.getGroundLayer());
         obstacles = Collections.singletonList(treeObstacle);
@@ -45,7 +48,7 @@ public class GameDesktopLauncher implements ApplicationListener {
 
         float deltaTime = Gdx.graphics.getDeltaTime();
 
-        playerTank.handleInput(obstacles);
+        tankInputHandler.handleInput(obstacles);
         playerTank.update(deltaTime);
 
         level.render();

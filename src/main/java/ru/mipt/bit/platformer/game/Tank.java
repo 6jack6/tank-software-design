@@ -42,13 +42,7 @@ public class Tank implements Disposable {
         moveRectangleAtTileCenter(tileLayer, bounds, this.coordinates);
     }
 
-    public void handleInput(Iterable<Tree> obstacles) {
-        for (Direction direction : Direction.values()) {
-            attemptMovement(direction, obstacles);
-        }
-    }
-
-    private void attemptMovement(Direction direction, Iterable<Tree> obstacles) {
+    void tryMove(Direction direction, Iterable<Tree> obstacles) {
         if (!direction.isPressed()) {
             return;
         }
