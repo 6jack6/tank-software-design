@@ -3,32 +3,34 @@ package ru.mipt.bit.platformer.game;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.math.Interpolation;
-import com.badlogic.gdx.utils.Disposable;
+import ru.mipt.bit.platformer.config.LevelConfig;
 import ru.mipt.bit.platformer.util.TileMovement;
 
 import static ru.mipt.bit.platformer.util.GdxGameUtils.getSingleLayer;
 
-public class LevelModel implements Disposable {
+public class LevelModel implements ILevelModel {
 
     private final TiledMap map;
     private final TiledMapTileLayer groundLayer;
     private final TileMovement tileMovement;
 
-    public LevelModel(String mapPath, Interpolation interpolation) {
-        map = new TmxMapLoader().load(mapPath);
+    public LevelModel(LevelConfig config) {
+        map = new TmxMapLoader().load(config.getMapPath());
         groundLayer = getSingleLayer(map);
-        tileMovement = new TileMovement(groundLayer, interpolation);
+        tileMovement = new TileMovement(groundLayer, config.getInterpolation());
     }
 
+    @Override
     public TiledMap getMap() {
         return map;
     }
 
+    @Override
     public TiledMapTileLayer getGroundLayer() {
         return groundLayer;
     }
 
+    @Override
     public TileMovement getTileMovement() {
         return tileMovement;
     }

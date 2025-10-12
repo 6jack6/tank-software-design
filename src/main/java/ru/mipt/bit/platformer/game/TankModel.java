@@ -1,28 +1,33 @@
 package ru.mipt.bit.platformer.game;
 
 import com.badlogic.gdx.math.GridPoint2;
+import ru.mipt.bit.platformer.config.TankConfig;
 import ru.mipt.bit.platformer.util.Direction;
 
 import static com.badlogic.gdx.math.MathUtils.isEqual;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.continueProgress;
 
-public class TankModel {
+public class TankModel implements ITankModel {
 
     private final GridPoint2 coordinates;
     private final GridPoint2 destination;
     private final GridPoint2 movementCandidate = new GridPoint2();
     private final float movementSpeed;
+    private final String texturePath;
 
     private float movementProgress = 1f;
     private float rotation = 0f;
 
-    public TankModel(GridPoint2 startCoordinates, float movementSpeed) {
-        this.coordinates = new GridPoint2(startCoordinates);
-        this.destination = new GridPoint2(startCoordinates);
-        this.movementSpeed = movementSpeed;
+    public TankModel(TankConfig config) {
+        GridPoint2 initialCoordinates = config.getInitialCoordinates();
+        this.coordinates = new GridPoint2(initialCoordinates);
+        this.destination = new GridPoint2(initialCoordinates);
+        this.movementSpeed = config.getMovementSpeed();
+        this.texturePath = config.getTexturePath();
     }
 
-    public void attemptMove(Direction direction, Iterable<TreeModel> obstacles) {
+    @Override
+    public void attemptMove(Direction direction, Iterable<? extends ITreeModel> obstacles) {
         if (!isReadyForNextMove()) {
             return;
         }
@@ -35,8 +40,8 @@ public class TankModel {
         rotation = direction.getRotation();
     }
 
-    private boolean isBlocked(GridPoint2 candidate, Iterable<TreeModel> obstacles) {
-        for (TreeModel obstacle : obstacles) {
+    private boolean isBlocked(GridPoint2 candidate, Iterable<? extends ITreeModel> obstacles) {
+        for (ITreeModel obstacle : obstacles) {
             if (obstacle.blocks(candidate)) {
                 return true;
             }
@@ -44,6 +49,7 @@ public class TankModel {
         return false;
     }
 
+    @Override
     public void update(float deltaTime) {
         movementProgress = continueProgress(movementProgress, deltaTime, movementSpeed);
         if (isEqual(movementProgress, 1f)) {
@@ -51,20 +57,29 @@ public class TankModel {
         }
     }
 
+    @Override
     public GridPoint2 getCoordinates() {
         return coordinates;
     }
 
+    @Override
     public GridPoint2 getDestination() {
         return destination;
     }
 
+    @Override
     public float getMovementProgress() {
         return movementProgress;
     }
 
+    @Override
     public float getRotation() {
         return rotation;
+    }
+
+    @Override
+    public String getTexturePath() {
+        return texturePath;
     }
 
     private boolean isReadyForNextMove() {
