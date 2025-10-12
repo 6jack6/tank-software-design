@@ -6,14 +6,15 @@ import com.badlogic.gdx.utils.Disposable;
 
 import static ru.mipt.bit.platformer.util.GdxGameUtils.createSingleLayerMapRenderer;
 
-public class LevelGraphics implements Disposable {
+public class LevelGraphics implements ILevelGraphics {
 
     private final MapRenderer renderer;
 
-    public LevelGraphics(LevelModel model, Batch batch) {
+    public LevelGraphics(ILevelModel model, Batch batch) {
         renderer = createSingleLayerMapRenderer(model.getMap(), batch);
     }
 
+    @Override
     public void render() {
         renderer.render();
     }

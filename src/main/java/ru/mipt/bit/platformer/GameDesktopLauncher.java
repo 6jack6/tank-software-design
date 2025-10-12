@@ -5,56 +5,57 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.GridPoint2;
-import com.badlogic.gdx.math.Interpolation;
-import java.util.Collections;
 import java.util.List;
-import ru.mipt.bit.platformer.game.LevelGraphics;
-import ru.mipt.bit.platformer.game.LevelModel;
-import ru.mipt.bit.platformer.game.TankGraphics;
-import ru.mipt.bit.platformer.game.TankInputHandler;
-import ru.mipt.bit.platformer.game.TankModel;
-import ru.mipt.bit.platformer.game.TreeGraphics;
-import ru.mipt.bit.platformer.game.TreeModel;
+import ru.mipt.bit.platformer.config.GraphicsConfig;
+import ru.mipt.bit.platformer.config.WindowConfig;
+import ru.mipt.bit.platformer.game.ILevelGraphics;
+import ru.mipt.bit.platformer.game.ILevelModel;
+import ru.mipt.bit.platformer.game.ITankGraphics;
+import ru.mipt.bit.platformer.game.ITankInputHandler;
+import ru.mipt.bit.platformer.game.ITankModel;
+import ru.mipt.bit.platformer.game.ITreeGraphics;
+import ru.mipt.bit.platformer.game.ITreeModel;
+import ru.mipt.bit.platformer.game.factory.DefaultGameFactory;
+import ru.mipt.bit.platformer.game.factory.GameContext;
+import ru.mipt.bit.platformer.game.factory.IGameFactory;
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 
 public class GameDesktopLauncher implements ApplicationListener {
 
-    private static final float MOVEMENT_SPEED = 0.4f;
-
+    private final IGameFactory gameFactory;
     private Batch batch;
-    private LevelModel levelModel;
-    private LevelGraphics levelGraphics;
-    private TankModel playerTank;
-    private TankGraphics playerTankGraphics;
-    private TankInputHandler tankInputHandler;
-    private TreeModel treeObstacle;
-    private TreeGraphics treeObstacleGraphics;
-    private List<TreeModel> obstacles;
+    private ILevelModel levelModel;
+    private ILevelGraphics levelGraphics;
+    private ITankModel playerTank;
+    private ITankGraphics playerTankGraphics;
+    private ITankInputHandler tankInputHandler;
+    private List<ITreeModel> obstacles;
+    private List<ITreeGraphics> obstacleGraphics;
+    private GraphicsConfig graphicsConfig;
+
+    public GameDesktopLauncher(IGameFactory gameFactory) {
+        this.gameFactory = gameFactory;
+    }
 
     @Override
     public void create() {
-        batch = new SpriteBatch();
-
-        levelModel = new LevelModel("level.tmx", Interpolation.smooth);
-        levelGraphics = new LevelGraphics(levelModel, batch);
-
-        playerTank = new TankModel(new GridPoint2(1, 1), MOVEMENT_SPEED);
-        playerTankGraphics = new TankGraphics("images/tank_blue.png", playerTank,
-                levelModel.getTileMovement(), levelModel.getGroundLayer());
-        tankInputHandler = new TankInputHandler(playerTank);
-
-        treeObstacle = new TreeModel(new GridPoint2(1, 3));
-        treeObstacleGraphics = new TreeGraphics("images/greenTree.png", treeObstacle,
-                levelModel.getGroundLayer());
-        obstacles = Collections.singletonList(treeObstacle);
+        GameContext context = gameFactory.createGameContext();
+        batch = context.getBatch();
+        levelModel = context.getLevelModel();
+        levelGraphics = context.getLevelGraphics();
+        playerTank = context.getTankModel();
+        playerTankGraphics = context.getTankGraphics();
+        tankInputHandler = context.getTankInputHandler();
+        obstacles = context.getObstacles();
+        obstacleGraphics = context.getObstacleGraphics();
+        graphicsConfig = context.getGraphicsConfig();
     }
 
     @Override
     public void render() {
-        Gdx.gl.glClearColor(0f, 0f, 0.2f, 1f);
+        Gdx.gl.glClearColor(graphicsConfig.getClearColorR(), graphicsConfig.getClearColorG(),
+                graphicsConfig.getClearColorB(), graphicsConfig.getClearColorA());
         Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
 
         float deltaTime = Gdx.graphics.getDeltaTime();
@@ -67,7 +68,9 @@ public class GameDesktopLauncher implements ApplicationListener {
 
         batch.begin();
         playerTankGraphics.render(batch);
-        treeObstacleGraphics.render(batch);
+        for (ITreeGraphics treeGraphics : obstacleGraphics) {
+            treeGraphics.render(batch);
+        }
         batch.end();
     }
 
@@ -88,7 +91,9 @@ public class GameDesktopLauncher implements ApplicationListener {
 
     @Override
     public void dispose() {
-        treeObstacleGraphics.dispose();
+        for (ITreeGraphics treeGraphics : obstacleGraphics) {
+            treeGraphics.dispose();
+        }
         playerTankGraphics.dispose();
         levelGraphics.dispose();
         levelModel.dispose();
@@ -97,7 +102,10 @@ public class GameDesktopLauncher implements ApplicationListener {
 
     public static void main(String[] args) {
         Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-        config.setWindowedMode(1280, 1024);
-        new Lwjgl3Application(new GameDesktopLauncher(), config);
+        IGameFactory gameFactory = new DefaultGameFactory(
+                new ru.mipt.bit.platformer.config.DefaultGameConfig());
+        WindowConfig windowConfig = gameFactory.getWindowConfig();
+        config.setWindowedMode(windowConfig.getWidth(), windowConfig.getHeight());
+        new Lwjgl3Application(new GameDesktopLauncher(gameFactory), config);
     }
 }

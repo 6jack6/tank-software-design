@@ -4,17 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 import ru.mipt.bit.platformer.util.Direction;
 
-public class TankInputHandler {
+public class TankInputHandler implements ITankInputHandler {
 
-    private final TankModel tank;
+    private final ITankModel tank;
     private final List<TankInputAction> actions = new ArrayList<>();
 
-    public TankInputHandler(TankModel tank) {
+    public TankInputHandler(ITankModel tank) {
         this.tank = tank;
         registerDirectionalMovement();
     }
 
-    public void handleInput(Iterable<TreeModel> obstacles) {
+    @Override
+    public void handleInput(Iterable<? extends ITreeModel> obstacles) {
         for (TankInputAction action : actions) {
             if (action.isPressed()) {
                 action.execute(tank, obstacles);
@@ -22,14 +23,9 @@ public class TankInputHandler {
         }
     }
 
+    @Override
     public void registerAction(TankInputAction action) {
         actions.add(action);
-    }
-
-    public interface TankInputAction {
-        boolean isPressed();
-
-        void execute(TankModel tank, Iterable<TreeModel> obstacles);
     }
 
     private void registerDirectionalMovement() {
@@ -52,7 +48,7 @@ public class TankInputHandler {
         }
 
         @Override
-        public void execute(TankModel tank, Iterable<TreeModel> obstacles) {
+        public void execute(ITankModel tank, Iterable<? extends ITreeModel> obstacles) {
             tank.attemptMove(direction, obstacles);
         }
     }
