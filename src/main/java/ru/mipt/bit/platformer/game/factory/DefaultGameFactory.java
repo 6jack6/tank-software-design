@@ -24,6 +24,7 @@ import ru.mipt.bit.platformer.game.TankInputHandler;
 import ru.mipt.bit.platformer.game.TankModel;
 import ru.mipt.bit.platformer.game.TreeGraphics;
 import ru.mipt.bit.platformer.game.TreeModel;
+import ru.mipt.bit.platformer.game.level.LevelPopulation;
 
 public class DefaultGameFactory implements IGameFactory {
 
@@ -41,7 +42,10 @@ public class DefaultGameFactory implements IGameFactory {
         ILevelModel levelModel = new LevelModel(levelConfig);
         ILevelGraphics levelGraphics = new LevelGraphics(levelModel, batch);
 
-        TankConfig tankConfig = gameConfig.createTankConfig();
+        LevelPopulation population = gameConfig.getLevelPopulationStrategy()
+                .populate(levelModel.getGroundLayer());
+
+        TankConfig tankConfig = gameConfig.createTankConfig(population.getPlayerSpawn());
         ITankModel tankModel = new TankModel(tankConfig);
         ITankGraphics tankGraphics = new TankGraphics(tankModel,
                 levelModel.getTileMovement(), levelModel.getGroundLayer());
@@ -49,7 +53,8 @@ public class DefaultGameFactory implements IGameFactory {
 
         List<ITreeModel> obstacles = new ArrayList<>();
         List<ITreeGraphics> obstacleGraphics = new ArrayList<>();
-        for (TreeConfig treeConfig : gameConfig.createTreeConfigs()) {
+        List<TreeConfig> treeConfigs = gameConfig.createTreeConfigs(population.getTreeCoordinates());
+        for (TreeConfig treeConfig : treeConfigs) {
             ITreeModel treeModel = new TreeModel(treeConfig);
             obstacles.add(treeModel);
             obstacleGraphics.add(new TreeGraphics(treeModel, levelModel.getGroundLayer()));
