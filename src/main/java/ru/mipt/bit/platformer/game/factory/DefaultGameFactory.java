@@ -25,6 +25,7 @@ import ru.mipt.bit.platformer.game.ITreeGraphics;
 import ru.mipt.bit.platformer.game.ITreeModel;
 import ru.mipt.bit.platformer.game.LevelGraphics;
 import ru.mipt.bit.platformer.game.LevelModel;
+import ru.mipt.bit.platformer.game.LevelBounds;
 import ru.mipt.bit.platformer.game.MoveTankCommand;
 import ru.mipt.bit.platformer.game.MovementObstacleProvider;
 import ru.mipt.bit.platformer.game.RandomTankAI;
@@ -90,17 +91,20 @@ public class DefaultGameFactory implements IGameFactory {
 
         MovementObstacleProvider obstacleProvider = new MovementObstacleProvider(obstacles, allTanks);
 
+        LevelBounds levelBounds = new LevelBounds(levelModel.getGroundLayer().getWidth(),
+                levelModel.getGroundLayer().getHeight());
+
         ITankInputHandler tankInputHandler = new TankInputHandler(direction ->
                 new MoveTankCommand(playerTank, direction,
-                        () -> obstacleProvider.getObstaclesFor(playerTank)));
+                        () -> obstacleProvider.getObstaclesFor(playerTank), levelBounds));
 
         List<TankAIController> enemyControllers = new ArrayList<>();
         for (ITankModel enemyTank : enemyTanks) {
             List<TankCommand> commands = new ArrayList<>();
-            for (Direction direction : Direction.values()) {
-                commands.add(new MoveTankCommand(enemyTank, direction,
-                        () -> obstacleProvider.getObstaclesFor(enemyTank)));
-            }
+                for (Direction direction : Direction.values()) {
+                    commands.add(new MoveTankCommand(enemyTank, direction,
+                            () -> obstacleProvider.getObstaclesFor(enemyTank), levelBounds));
+                }
             enemyControllers.add(new RandomTankAI(commands));
         }
 
