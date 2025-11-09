@@ -2,54 +2,48 @@ package ru.mipt.bit.platformer.game;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import ru.mipt.bit.platformer.util.Direction;
 
 public class TankInputHandler implements ITankInputHandler {
 
-    private final ITankModel tank;
-    private final List<TankInputAction> actions = new ArrayList<>();
+    private final List<DirectionalCommand> commands = new ArrayList<>();
 
-    public TankInputHandler(ITankModel tank) {
-        this.tank = tank;
-        registerDirectionalMovement();
+    public TankInputHandler(Function<Direction, TankCommand> commandFactory) {
+        registerDirectionalCommands(commandFactory);
     }
 
     @Override
-    public void handleInput(Iterable<? extends ITreeModel> obstacles) {
-        for (TankInputAction action : actions) {
-            if (action.isPressed()) {
-                action.execute(tank, obstacles);
+    public void handleInput() {
+        for (DirectionalCommand command : commands) {
+            if (command.isPressed()) {
+                command.execute();
             }
         }
     }
 
-    @Override
-    public void registerAction(TankInputAction action) {
-        actions.add(action);
-    }
-
-    private void registerDirectionalMovement() {
+    private void registerDirectionalCommands(Function<Direction, TankCommand> commandFactory) {
         for (Direction direction : Direction.values()) {
-            actions.add(new DirectionMovementAction(direction));
+            commands.add(new DirectionalCommand(direction, commandFactory.apply(direction)));
         }
     }
 
-    private static final class DirectionMovementAction implements TankInputAction {
+    private static final class DirectionalCommand {
 
         private final Direction direction;
+        private final TankCommand command;
 
-        private DirectionMovementAction(Direction direction) {
+        private DirectionalCommand(Direction direction, TankCommand command) {
             this.direction = direction;
+            this.command = command;
         }
 
-        @Override
-        public boolean isPressed() {
+        private boolean isPressed() {
             return direction.isPressed();
         }
 
-        @Override
-        public void execute(ITankModel tank, Iterable<? extends ITreeModel> obstacles) {
-            tank.attemptMove(direction, obstacles);
+        private void execute() {
+            command.execute();
         }
     }
 }

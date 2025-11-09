@@ -15,7 +15,7 @@ import ru.mipt.bit.platformer.game.ITankGraphics;
 import ru.mipt.bit.platformer.game.ITankInputHandler;
 import ru.mipt.bit.platformer.game.ITankModel;
 import ru.mipt.bit.platformer.game.ITreeGraphics;
-import ru.mipt.bit.platformer.game.ITreeModel;
+import ru.mipt.bit.platformer.game.TankAIController;
 import ru.mipt.bit.platformer.game.factory.DefaultGameFactory;
 import ru.mipt.bit.platformer.game.factory.GameContext;
 import ru.mipt.bit.platformer.game.factory.IGameFactory;
@@ -37,7 +37,9 @@ public class GameDesktopLauncher implements ApplicationListener {
     private ITankModel playerTank;
     private ITankGraphics playerTankGraphics;
     private ITankInputHandler tankInputHandler;
-    private List<ITreeModel> obstacles;
+    private List<ITankModel> enemyTanks;
+    private List<ITankGraphics> enemyTankGraphics;
+    private List<TankAIController> enemyControllers;
     private List<ITreeGraphics> obstacleGraphics;
     private GraphicsConfig graphicsConfig;
 
@@ -54,7 +56,9 @@ public class GameDesktopLauncher implements ApplicationListener {
         playerTank = context.getTankModel();
         playerTankGraphics = context.getTankGraphics();
         tankInputHandler = context.getTankInputHandler();
-        obstacles = context.getObstacles();
+        enemyTanks = context.getEnemyTanks();
+        enemyTankGraphics = context.getEnemyTankGraphics();
+        enemyControllers = context.getEnemyControllers();
         obstacleGraphics = context.getObstacleGraphics();
         graphicsConfig = context.getGraphicsConfig();
     }
@@ -67,14 +71,27 @@ public class GameDesktopLauncher implements ApplicationListener {
 
         float deltaTime = Gdx.graphics.getDeltaTime();
 
-        tankInputHandler.handleInput(obstacles);
+        tankInputHandler.handleInput();
+        for (TankAIController controller : enemyControllers) {
+            controller.update();
+        }
+
         playerTankGraphics.update();
+        for (ITankGraphics tankGraphics : enemyTankGraphics) {
+            tankGraphics.update();
+        }
         playerTank.update(deltaTime);
+        for (ITankModel enemyTank : enemyTanks) {
+            enemyTank.update(deltaTime);
+        }
 
         levelGraphics.render();
 
         batch.begin();
         playerTankGraphics.render(batch);
+        for (ITankGraphics tankGraphics : enemyTankGraphics) {
+            tankGraphics.render(batch);
+        }
         for (ITreeGraphics treeGraphics : obstacleGraphics) {
             treeGraphics.render(batch);
         }
@@ -102,6 +119,9 @@ public class GameDesktopLauncher implements ApplicationListener {
             treeGraphics.dispose();
         }
         playerTankGraphics.dispose();
+        for (ITankGraphics tankGraphics : enemyTankGraphics) {
+            tankGraphics.dispose();
+        }
         levelGraphics.dispose();
         levelModel.dispose();
         batch.dispose();

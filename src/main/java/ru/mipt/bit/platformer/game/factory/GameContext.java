@@ -11,6 +11,7 @@ import ru.mipt.bit.platformer.game.ITankInputHandler;
 import ru.mipt.bit.platformer.game.ITankModel;
 import ru.mipt.bit.platformer.game.ITreeGraphics;
 import ru.mipt.bit.platformer.game.ITreeModel;
+import ru.mipt.bit.platformer.game.TankAIController;
 
 public class GameContext {
 
@@ -22,6 +23,9 @@ public class GameContext {
     private final ITankInputHandler tankInputHandler;
     private final List<ITreeModel> obstacles;
     private final List<ITreeGraphics> obstacleGraphics;
+    private final List<ITankModel> enemyTanks;
+    private final List<ITankGraphics> enemyTankGraphics;
+    private final List<TankAIController> enemyControllers;
     private final GraphicsConfig graphicsConfig;
 
     public GameContext(Batch batch,
@@ -32,6 +36,9 @@ public class GameContext {
                        ITankInputHandler tankInputHandler,
                        List<ITreeModel> obstacles,
                        List<ITreeGraphics> obstacleGraphics,
+                       List<ITankModel> enemyTanks,
+                       List<ITankGraphics> enemyTankGraphics,
+                       List<TankAIController> enemyControllers,
                        GraphicsConfig graphicsConfig) {
         this.batch = batch;
         this.levelModel = levelModel;
@@ -41,6 +48,9 @@ public class GameContext {
         this.tankInputHandler = tankInputHandler;
         this.obstacles = Collections.unmodifiableList(obstacles);
         this.obstacleGraphics = Collections.unmodifiableList(obstacleGraphics);
+        this.enemyTanks = Collections.unmodifiableList(enemyTanks);
+        this.enemyTankGraphics = Collections.unmodifiableList(enemyTankGraphics);
+        this.enemyControllers = Collections.unmodifiableList(enemyControllers);
         this.graphicsConfig = graphicsConfig;
     }
 
@@ -74,6 +84,18 @@ public class GameContext {
 
     public List<ITreeGraphics> getObstacleGraphics() {
         return obstacleGraphics;
+    }
+
+    public List<ITankModel> getEnemyTanks() {
+        return enemyTanks;
+    }
+
+    public List<ITankGraphics> getEnemyTankGraphics() {
+        return enemyTankGraphics;
+    }
+
+    public List<TankAIController> getEnemyControllers() {
+        return enemyControllers;
     }
 
     public GraphicsConfig getGraphicsConfig() {

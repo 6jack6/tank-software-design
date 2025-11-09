@@ -29,6 +29,7 @@ public class DefaultGameConfig {
     private static final float CLEAR_COLOR_A = 1f;
 
     private static final String DEFAULT_LEVEL_LAYOUT = "level.txt";
+    private static final int ENEMY_TANK_COUNT = 3;
 
     private final LevelPopulationStrategy levelPopulationStrategy;
 
@@ -66,5 +67,13 @@ public class DefaultGameConfig {
 
     public LevelPopulationStrategy getLevelPopulationStrategy() {
         return levelPopulationStrategy;
+    }
+
+    public int getEnemyTankCount() {
+        return ENEMY_TANK_COUNT;
+    }
+
+    public TankConfig createEnemyTankConfig(GridPoint2 initialCoordinates) {
+        return createTankConfig(initialCoordinates);
     }
 }
