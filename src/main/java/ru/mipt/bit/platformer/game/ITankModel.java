@@ -18,4 +18,6 @@ public interface ITankModel {
     float getRotation();
 
     String getTexturePath();
+
+    int getHealthPoints();
 }

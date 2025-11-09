@@ -44,6 +44,14 @@ class TankModelTest {
         assertTrue(tank.getMovementProgress() >= 1f);
     }
 
+    @Test
+    void healthPointsAreWithinExpectedRange() {
+        TankModel tank = new TankModel(CONFIG);
+
+        assertTrue(tank.getHealthPoints() >= 80 && tank.getHealthPoints() <= 100,
+                "Health points should be between 80 and 100 inclusive");
+    }
+
     private static final class FixedObstacle implements ITreeModel {
 
         private final GridPoint2 coordinates;

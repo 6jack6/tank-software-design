@@ -1,5 +1,6 @@
 package ru.mipt.bit.platformer.game.factory;
 
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -16,6 +17,8 @@ import ru.mipt.bit.platformer.config.LevelConfig;
 import ru.mipt.bit.platformer.config.TankConfig;
 import ru.mipt.bit.platformer.config.TreeConfig;
 import ru.mipt.bit.platformer.config.WindowConfig;
+import ru.mipt.bit.platformer.game.HealthIndicatorTankGraphics;
+import ru.mipt.bit.platformer.game.HealthIndicatorVisibility;
 import ru.mipt.bit.platformer.game.ILevelGraphics;
 import ru.mipt.bit.platformer.game.ILevelModel;
 import ru.mipt.bit.platformer.game.ITankGraphics;
@@ -34,6 +37,7 @@ import ru.mipt.bit.platformer.game.TankInputHandler;
 import ru.mipt.bit.platformer.game.TankAIController;
 import ru.mipt.bit.platformer.game.TankCommand;
 import ru.mipt.bit.platformer.game.TankModel;
+import ru.mipt.bit.platformer.game.ToggleHealthIndicatorCommand;
 import ru.mipt.bit.platformer.game.TreeGraphics;
 import ru.mipt.bit.platformer.game.TreeModel;
 import ru.mipt.bit.platformer.game.level.LevelPopulation;
@@ -68,10 +72,12 @@ public class DefaultGameFactory implements IGameFactory {
             obstacleGraphics.add(new TreeGraphics(treeModel, levelModel.getGroundLayer()));
         }
 
+        HealthIndicatorVisibility healthIndicatorVisibility = new HealthIndicatorVisibility();
+
         TankConfig tankConfig = gameConfig.createTankConfig(population.getPlayerSpawn());
         ITankModel playerTank = new TankModel(tankConfig);
-        ITankGraphics playerTankGraphics = new TankGraphics(playerTank,
-                levelModel.getTileMovement(), levelModel.getGroundLayer());
+        ITankGraphics playerTankGraphics = createTankGraphics(playerTank, levelModel,
+                healthIndicatorVisibility);
 
         List<GridPoint2> enemySpawns = generateEnemySpawns(levelModel.getGroundLayer(),
                 population.getPlayerSpawn(), treeCoordinates, gameConfig.getEnemyTankCount());
@@ -81,8 +87,8 @@ public class DefaultGameFactory implements IGameFactory {
             TankConfig enemyConfig = gameConfig.createEnemyTankConfig(spawn);
             ITankModel enemyTank = new TankModel(enemyConfig);
             enemyTanks.add(enemyTank);
-            enemyTankGraphics.add(new TankGraphics(enemyTank,
-                    levelModel.getTileMovement(), levelModel.getGroundLayer()));
+            enemyTankGraphics.add(createTankGraphics(enemyTank, levelModel,
+                    healthIndicatorVisibility));
         }
 
         List<ITankModel> allTanks = new ArrayList<>();
@@ -94,17 +100,20 @@ public class DefaultGameFactory implements IGameFactory {
         LevelBounds levelBounds = new LevelBounds(levelModel.getGroundLayer().getWidth(),
                 levelModel.getGroundLayer().getHeight());
 
-        ITankInputHandler tankInputHandler = new TankInputHandler(direction ->
+        TankInputHandler playerInputHandler = new TankInputHandler(direction ->
                 new MoveTankCommand(playerTank, direction,
                         () -> obstacleProvider.getObstaclesFor(playerTank), levelBounds));
+        playerInputHandler.registerKeyCommand(Input.Keys.L, true,
+                new ToggleHealthIndicatorCommand(healthIndicatorVisibility));
+        ITankInputHandler tankInputHandler = playerInputHandler;
 
         List<TankAIController> enemyControllers = new ArrayList<>();
         for (ITankModel enemyTank : enemyTanks) {
             List<TankCommand> commands = new ArrayList<>();
-                for (Direction direction : Direction.values()) {
-                    commands.add(new MoveTankCommand(enemyTank, direction,
-                            () -> obstacleProvider.getObstaclesFor(enemyTank), levelBounds));
-                }
+            for (Direction direction : Direction.values()) {
+                commands.add(new MoveTankCommand(enemyTank, direction,
+                        () -> obstacleProvider.getObstaclesFor(enemyTank), levelBounds));
+            }
             enemyControllers.add(new RandomTankAI(commands));
         }
 
@@ -118,6 +127,14 @@ public class DefaultGameFactory implements IGameFactory {
     @Override
     public WindowConfig getWindowConfig() {
         return gameConfig.createWindowConfig();
+    }
+
+    private ITankGraphics createTankGraphics(ITankModel tank,
+                                             ILevelModel levelModel,
+                                             HealthIndicatorVisibility healthIndicatorVisibility) {
+        ITankGraphics baseGraphics = new TankGraphics(tank,
+                levelModel.getTileMovement(), levelModel.getGroundLayer());
+        return new HealthIndicatorTankGraphics(baseGraphics, tank, healthIndicatorVisibility);
     }
 
     private List<GridPoint2> generateEnemySpawns(TiledMapTileLayer groundLayer,

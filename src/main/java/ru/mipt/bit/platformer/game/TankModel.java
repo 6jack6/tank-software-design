@@ -5,6 +5,7 @@ import ru.mipt.bit.platformer.config.TankConfig;
 import ru.mipt.bit.platformer.util.Direction;
 
 import static com.badlogic.gdx.math.MathUtils.isEqual;
+import static com.badlogic.gdx.math.MathUtils.random;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.continueProgress;
 
 public class TankModel implements ITankModel {
@@ -14,6 +15,7 @@ public class TankModel implements ITankModel {
     private final GridPoint2 movementCandidate = new GridPoint2();
     private final float movementSpeed;
     private final String texturePath;
+    private final int healthPoints;
 
     private float movementProgress = 1f;
     private float rotation = 0f;
@@ -24,6 +26,7 @@ public class TankModel implements ITankModel {
         this.destination = new GridPoint2(initialCoordinates);
         this.movementSpeed = config.getMovementSpeed();
         this.texturePath = config.getTexturePath();
+        this.healthPoints = random(80, 100);
     }
 
     @Override
@@ -80,6 +83,11 @@ public class TankModel implements ITankModel {
     @Override
     public String getTexturePath() {
         return texturePath;
+    }
+
+    @Override
+    public int getHealthPoints() {
+        return healthPoints;
     }
 
     private boolean isReadyForNextMove() {

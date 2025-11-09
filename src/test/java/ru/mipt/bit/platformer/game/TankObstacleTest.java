@@ -65,5 +65,10 @@ class TankObstacleTest {
         public String getTexturePath() {
             return "test";
         }
+
+        @Override
+        public int getHealthPoints() {
+            return 100;
+        }
     }
 }
