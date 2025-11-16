@@ -2,6 +2,7 @@ package ru.mipt.bit.platformer.game;
 
 import com.badlogic.gdx.math.GridPoint2;
 import org.junit.jupiter.api.Test;
+import ru.mipt.bit.platformer.util.Direction;
 import ru.mipt.bit.platformer.game.model.ITankModel;
 import ru.mipt.bit.platformer.game.model.ITreeModel;
 import ru.mipt.bit.platformer.game.model.TankObstacle;
@@ -73,6 +74,20 @@ class TankObstacleTest {
         @Override
         public int getHealthPoints() {
             return 100;
+        }
+
+        @Override
+        public Direction getDirection() {
+            return Direction.UP;
+        }
+
+        @Override
+        public void applyDamage(int damage) {
+        }
+
+        @Override
+        public boolean isDestroyed() {
+            return false;
         }
     }
 }

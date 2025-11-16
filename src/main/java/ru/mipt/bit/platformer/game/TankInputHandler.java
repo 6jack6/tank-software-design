@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import ru.mipt.bit.platformer.game.ITankCommand;
 import ru.mipt.bit.platformer.util.Direction;
 
 public class TankInputHandler implements ITankInputHandler {

@@ -6,12 +6,12 @@ import java.util.List;
 import ru.mipt.bit.platformer.config.GraphicsConfig;
 import ru.mipt.bit.platformer.game.ITankAIController;
 import ru.mipt.bit.platformer.game.ITankInputHandler;
+import ru.mipt.bit.platformer.game.graphics.IBulletGraphics;
 import ru.mipt.bit.platformer.game.graphics.ILevelGraphics;
 import ru.mipt.bit.platformer.game.graphics.ITankGraphics;
 import ru.mipt.bit.platformer.game.graphics.ITreeGraphics;
 import ru.mipt.bit.platformer.game.level.ILevelModel;
 import ru.mipt.bit.platformer.game.model.ITankModel;
-import ru.mipt.bit.platformer.game.model.ITreeModel;
 
 public class GameContext {
 
@@ -21,10 +21,10 @@ public class GameContext {
     private final ITankModel tankModel;
     private final ITankGraphics tankGraphics;
     private final ITankInputHandler tankInputHandler;
-    private final List<ITreeModel> obstacles;
     private final List<ITreeGraphics> obstacleGraphics;
     private final List<ITankModel> enemyTanks;
     private final List<ITankGraphics> enemyTankGraphics;
+    private final List<IBulletGraphics> bulletGraphics;
     private final List<ITankAIController> enemyControllers;
     private final GraphicsConfig graphicsConfig;
 
@@ -34,10 +34,10 @@ public class GameContext {
                        ITankModel tankModel,
                        ITankGraphics tankGraphics,
                        ITankInputHandler tankInputHandler,
-                       List<ITreeModel> obstacles,
                        List<ITreeGraphics> obstacleGraphics,
                        List<ITankModel> enemyTanks,
                        List<ITankGraphics> enemyTankGraphics,
+                       List<IBulletGraphics> bulletGraphics,
                        List<ITankAIController> enemyControllers,
                        GraphicsConfig graphicsConfig) {
         this.batch = batch;
@@ -46,10 +46,10 @@ public class GameContext {
         this.tankModel = tankModel;
         this.tankGraphics = tankGraphics;
         this.tankInputHandler = tankInputHandler;
-        this.obstacles = Collections.unmodifiableList(obstacles);
         this.obstacleGraphics = Collections.unmodifiableList(obstacleGraphics);
         this.enemyTanks = Collections.unmodifiableList(enemyTanks);
         this.enemyTankGraphics = Collections.unmodifiableList(enemyTankGraphics);
+        this.bulletGraphics = Collections.unmodifiableList(bulletGraphics);
         this.enemyControllers = Collections.unmodifiableList(enemyControllers);
         this.graphicsConfig = graphicsConfig;
     }
@@ -78,10 +78,6 @@ public class GameContext {
         return tankInputHandler;
     }
 
-    public List<ITreeModel> getObstacles() {
-        return obstacles;
-    }
-
     public List<ITreeGraphics> getObstacleGraphics() {
         return obstacleGraphics;
     }
@@ -92,6 +88,10 @@ public class GameContext {
 
     public List<ITankGraphics> getEnemyTankGraphics() {
         return enemyTankGraphics;
+    }
+
+    public List<IBulletGraphics> getBulletGraphics() {
+        return bulletGraphics;
     }
 
     public List<ITankAIController> getEnemyControllers() {

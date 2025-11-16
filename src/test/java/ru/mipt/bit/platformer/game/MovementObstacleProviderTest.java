@@ -114,5 +114,19 @@ class MovementObstacleProviderTest {
         public int getHealthPoints() {
             return 100;
         }
+
+        @Override
+        public ru.mipt.bit.platformer.util.Direction getDirection() {
+            return ru.mipt.bit.platformer.util.Direction.UP;
+        }
+
+        @Override
+        public void applyDamage(int damage) {
+        }
+
+        @Override
+        public boolean isDestroyed() {
+            return false;
+        }
     }
 }

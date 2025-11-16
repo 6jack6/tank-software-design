@@ -13,9 +13,10 @@ class RandomTankAITest {
     void executesExactlyOneCommandPerUpdate() {
         CountingCommand first = new CountingCommand();
         CountingCommand second = new CountingCommand();
-        RandomTankAI ai = new RandomTankAI(List.of(first, second), new java.util.Random(42));
+        RandomTankAI ai = new RandomTankAI(List.of(first, second), new java.util.Random(42), 1);
 
-        ai.update();
+        ai.update(); // delay countdown
+        ai.update(); // executes once
 
         assertEquals(1, first.invocations.get() + second.invocations.get());
     }

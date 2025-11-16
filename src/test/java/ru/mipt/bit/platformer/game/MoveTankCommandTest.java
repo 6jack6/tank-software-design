@@ -103,5 +103,19 @@ class MoveTankCommandTest {
         public int getHealthPoints() {
             return 100;
         }
+
+        @Override
+        public Direction getDirection() {
+            return lastDirection.get() == null ? Direction.UP : lastDirection.get();
+        }
+
+        @Override
+        public void applyDamage(int damage) {
+        }
+
+        @Override
+        public boolean isDestroyed() {
+            return false;
+        }
     }
 }

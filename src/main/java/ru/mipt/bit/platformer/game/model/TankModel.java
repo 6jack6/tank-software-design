@@ -15,10 +15,12 @@ public class TankModel implements ITankModel {
     private final GridPoint2 movementCandidate = new GridPoint2();
     private final float movementSpeed;
     private final String texturePath;
-    private final int healthPoints;
 
     private float movementProgress = 1f;
     private float rotation = 0f;
+    private Direction direction = Direction.UP;
+    private int healthPoints;
+    private boolean destroyed;
 
     public TankModel(TankConfig config) {
         GridPoint2 initialCoordinates = config.getInitialCoordinates();
@@ -32,6 +34,8 @@ public class TankModel implements ITankModel {
     @Override
     public void attemptMove(Direction direction, Iterable<? extends ITreeModel> obstacles) {
         if (!isReadyForNextMove()) {
+            this.direction = direction;
+            rotation = direction.getRotation();
             return;
         }
 
@@ -41,6 +45,7 @@ public class TankModel implements ITankModel {
             movementProgress = 0f;
         }
         rotation = direction.getRotation();
+        this.direction = direction;
     }
 
     private boolean isBlocked(GridPoint2 candidate, Iterable<? extends ITreeModel> obstacles) {
@@ -88,6 +93,27 @@ public class TankModel implements ITankModel {
     @Override
     public int getHealthPoints() {
         return healthPoints;
+    }
+
+    @Override
+    public Direction getDirection() {
+        return direction;
+    }
+
+    @Override
+    public void applyDamage(int damage) {
+        if (destroyed) {
+            return;
+        }
+        healthPoints -= Math.max(0, damage);
+        if (healthPoints <= 0) {
+            destroyed = true;
+        }
+    }
+
+    @Override
+    public boolean isDestroyed() {
+        return destroyed;
     }
 
     private boolean isReadyForNextMove() {

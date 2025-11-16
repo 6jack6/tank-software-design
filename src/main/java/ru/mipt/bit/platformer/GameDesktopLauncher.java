@@ -14,6 +14,7 @@ import ru.mipt.bit.platformer.game.ITankAIController;
 import ru.mipt.bit.platformer.game.factory.DefaultGameFactory;
 import ru.mipt.bit.platformer.game.factory.GameContext;
 import ru.mipt.bit.platformer.game.factory.IGameFactory;
+import ru.mipt.bit.platformer.game.graphics.IBulletGraphics;
 import ru.mipt.bit.platformer.game.graphics.ILevelGraphics;
 import ru.mipt.bit.platformer.game.graphics.ITankGraphics;
 import ru.mipt.bit.platformer.game.graphics.ITreeGraphics;
@@ -41,6 +42,7 @@ public class GameDesktopLauncher implements ApplicationListener {
     private List<ITankGraphics> enemyTankGraphics;
     private List<ITankAIController> enemyControllers;
     private List<ITreeGraphics> obstacleGraphics;
+    private List<IBulletGraphics> bulletGraphics;
     private GraphicsConfig graphicsConfig;
 
     public GameDesktopLauncher(IGameFactory gameFactory) {
@@ -60,6 +62,7 @@ public class GameDesktopLauncher implements ApplicationListener {
         enemyTankGraphics = context.getEnemyTankGraphics();
         enemyControllers = context.getEnemyControllers();
         obstacleGraphics = context.getObstacleGraphics();
+        bulletGraphics = context.getBulletGraphics();
         graphicsConfig = context.getGraphicsConfig();
     }
 
@@ -84,6 +87,10 @@ public class GameDesktopLauncher implements ApplicationListener {
         for (ITankModel enemyTank : enemyTanks) {
             enemyTank.update(deltaTime);
         }
+        levelModel.update(deltaTime);
+        for (IBulletGraphics graphics : bulletGraphics) {
+            graphics.update();
+        }
 
         levelGraphics.render();
 
@@ -91,6 +98,12 @@ public class GameDesktopLauncher implements ApplicationListener {
         playerTankGraphics.render(batch);
         for (ITankGraphics tankGraphics : enemyTankGraphics) {
             tankGraphics.render(batch);
+        }
+        for (ITankGraphics tankGraphics : enemyTankGraphics) {
+            tankGraphics.render(batch);
+        }
+        for (IBulletGraphics graphics : bulletGraphics) {
+            graphics.render(batch);
         }
         for (ITreeGraphics treeGraphics : obstacleGraphics) {
             treeGraphics.render(batch);
@@ -117,6 +130,9 @@ public class GameDesktopLauncher implements ApplicationListener {
     public void dispose() {
         for (ITreeGraphics treeGraphics : obstacleGraphics) {
             treeGraphics.dispose();
+        }
+        for (IBulletGraphics graphics : bulletGraphics) {
+            graphics.dispose();
         }
         playerTankGraphics.dispose();
         for (ITankGraphics tankGraphics : enemyTankGraphics) {

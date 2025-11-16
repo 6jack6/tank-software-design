@@ -20,4 +20,10 @@ public interface ITankModel {
     String getTexturePath();
 
     int getHealthPoints();
+
+    Direction getDirection();
+
+    void applyDamage(int damage);
+
+    boolean isDestroyed();
 }
