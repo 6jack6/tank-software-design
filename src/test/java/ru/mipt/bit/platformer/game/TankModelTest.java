@@ -5,6 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import ru.mipt.bit.platformer.config.TankConfig;
+import ru.mipt.bit.platformer.game.model.ITankModel;
+import ru.mipt.bit.platformer.game.model.ITreeModel;
+import ru.mipt.bit.platformer.game.model.TankModel;
 import ru.mipt.bit.platformer.util.Direction;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,7 +19,7 @@ class TankModelTest {
 
     @Test
     void movesToRequestedTileWhenUnblocked() {
-        TankModel tank = new TankModel(CONFIG);
+        ITankModel tank = new TankModel(CONFIG);
 
         tank.attemptMove(Direction.UP, Collections.emptyList());
 
@@ -25,7 +28,7 @@ class TankModelTest {
 
     @Test
     void staysInPlaceWhenBlockedByObstacle() {
-        TankModel tank = new TankModel(CONFIG);
+        ITankModel tank = new TankModel(CONFIG);
         ITreeModel blockingTree = new FixedObstacle(new GridPoint2(0, 1));
 
         tank.attemptMove(Direction.UP, List.of(blockingTree));
@@ -35,7 +38,7 @@ class TankModelTest {
 
     @Test
     void updatesCoordinatesAfterCompletingMovement() {
-        TankModel tank = new TankModel(CONFIG);
+        ITankModel tank = new TankModel(CONFIG);
         tank.attemptMove(Direction.RIGHT, Collections.emptyList());
 
         tank.update(0.5f);
@@ -46,7 +49,7 @@ class TankModelTest {
 
     @Test
     void healthPointsAreWithinExpectedRange() {
-        TankModel tank = new TankModel(CONFIG);
+        ITankModel tank = new TankModel(CONFIG);
 
         assertTrue(tank.getHealthPoints() >= 80 && tank.getHealthPoints() <= 100,
                 "Health points should be between 80 and 100 inclusive");

@@ -11,7 +11,7 @@ public class TankInputHandler implements ITankInputHandler {
     private final List<DirectionalCommand> commands = new ArrayList<>();
     private final List<KeyCommand> keyCommands = new ArrayList<>();
 
-    public TankInputHandler(Function<Direction, TankCommand> commandFactory) {
+    public TankInputHandler(Function<Direction, ITankCommand> commandFactory) {
         registerDirectionalCommands(commandFactory);
     }
 
@@ -29,22 +29,22 @@ public class TankInputHandler implements ITankInputHandler {
         }
     }
 
-    private void registerDirectionalCommands(Function<Direction, TankCommand> commandFactory) {
+    private void registerDirectionalCommands(Function<Direction, ITankCommand> commandFactory) {
         for (Direction direction : Direction.values()) {
             commands.add(new DirectionalCommand(direction, commandFactory.apply(direction)));
         }
     }
 
-    public void registerKeyCommand(int keyCode, boolean justPressed, TankCommand command) {
+    public void registerKeyCommand(int keyCode, boolean justPressed, ITankCommand command) {
         keyCommands.add(new KeyCommand(keyCode, justPressed, command));
     }
 
     private static final class DirectionalCommand {
 
         private final Direction direction;
-        private final TankCommand command;
+        private final ITankCommand command;
 
-        private DirectionalCommand(Direction direction, TankCommand command) {
+        private DirectionalCommand(Direction direction, ITankCommand command) {
             this.direction = direction;
             this.command = command;
         }
@@ -62,9 +62,9 @@ public class TankInputHandler implements ITankInputHandler {
 
         private final int keyCode;
         private final boolean justPressed;
-        private final TankCommand command;
+        private final ITankCommand command;
 
-        private KeyCommand(int keyCode, boolean justPressed, TankCommand command) {
+        private KeyCommand(int keyCode, boolean justPressed, ITankCommand command) {
             this.keyCode = keyCode;
             this.justPressed = justPressed;
             this.command = command;

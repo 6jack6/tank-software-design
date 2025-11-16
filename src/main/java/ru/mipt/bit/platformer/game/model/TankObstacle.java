@@ -1,4 +1,4 @@
-package ru.mipt.bit.platformer.game;
+package ru.mipt.bit.platformer.game.model;
 
 import com.badlogic.gdx.math.GridPoint2;
 
@@ -12,7 +12,8 @@ public class TankObstacle implements ITreeModel {
 
     @Override
     public boolean blocks(GridPoint2 tileCoordinates) {
-        return tank.getCoordinates().equals(tileCoordinates) || tank.getDestination().equals(tileCoordinates);
+        return tank.getCoordinates().equals(tileCoordinates)
+                || tank.getDestination().equals(tileCoordinates);
     }
 
     @Override

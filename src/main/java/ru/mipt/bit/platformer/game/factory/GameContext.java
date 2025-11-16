@@ -4,14 +4,14 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import java.util.Collections;
 import java.util.List;
 import ru.mipt.bit.platformer.config.GraphicsConfig;
-import ru.mipt.bit.platformer.game.ILevelGraphics;
-import ru.mipt.bit.platformer.game.ILevelModel;
-import ru.mipt.bit.platformer.game.ITankGraphics;
+import ru.mipt.bit.platformer.game.ITankAIController;
 import ru.mipt.bit.platformer.game.ITankInputHandler;
-import ru.mipt.bit.platformer.game.ITankModel;
-import ru.mipt.bit.platformer.game.ITreeGraphics;
-import ru.mipt.bit.platformer.game.ITreeModel;
-import ru.mipt.bit.platformer.game.TankAIController;
+import ru.mipt.bit.platformer.game.graphics.ILevelGraphics;
+import ru.mipt.bit.platformer.game.graphics.ITankGraphics;
+import ru.mipt.bit.platformer.game.graphics.ITreeGraphics;
+import ru.mipt.bit.platformer.game.level.ILevelModel;
+import ru.mipt.bit.platformer.game.model.ITankModel;
+import ru.mipt.bit.platformer.game.model.ITreeModel;
 
 public class GameContext {
 
@@ -25,7 +25,7 @@ public class GameContext {
     private final List<ITreeGraphics> obstacleGraphics;
     private final List<ITankModel> enemyTanks;
     private final List<ITankGraphics> enemyTankGraphics;
-    private final List<TankAIController> enemyControllers;
+    private final List<ITankAIController> enemyControllers;
     private final GraphicsConfig graphicsConfig;
 
     public GameContext(Batch batch,
@@ -38,7 +38,7 @@ public class GameContext {
                        List<ITreeGraphics> obstacleGraphics,
                        List<ITankModel> enemyTanks,
                        List<ITankGraphics> enemyTankGraphics,
-                       List<TankAIController> enemyControllers,
+                       List<ITankAIController> enemyControllers,
                        GraphicsConfig graphicsConfig) {
         this.batch = batch;
         this.levelModel = levelModel;
@@ -94,7 +94,7 @@ public class GameContext {
         return enemyTankGraphics;
     }
 
-    public List<TankAIController> getEnemyControllers() {
+    public List<ITankAIController> getEnemyControllers() {
         return enemyControllers;
     }
 

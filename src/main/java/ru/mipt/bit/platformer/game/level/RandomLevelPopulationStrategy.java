@@ -6,11 +6,11 @@ import com.badlogic.gdx.math.GridPoint2;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.Random;
 import java.util.Objects;
+import java.util.Random;
+import java.util.Set;
 
-public class RandomLevelPopulationStrategy implements LevelPopulationStrategy {
+public class RandomLevelPopulationStrategy implements ILevelPopulationStrategy {
 
     private final int requestedTreeCount;
     private final Random random;

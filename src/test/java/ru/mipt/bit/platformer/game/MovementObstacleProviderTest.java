@@ -4,6 +4,9 @@ import com.badlogic.gdx.math.GridPoint2;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import ru.mipt.bit.platformer.game.level.MovementObstacleProvider;
+import ru.mipt.bit.platformer.game.model.ITankModel;
+import ru.mipt.bit.platformer.game.model.ITreeModel;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;

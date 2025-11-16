@@ -17,30 +17,30 @@ import ru.mipt.bit.platformer.config.LevelConfig;
 import ru.mipt.bit.platformer.config.TankConfig;
 import ru.mipt.bit.platformer.config.TreeConfig;
 import ru.mipt.bit.platformer.config.WindowConfig;
-import ru.mipt.bit.platformer.game.HealthIndicatorTankGraphics;
-import ru.mipt.bit.platformer.game.HealthIndicatorVisibility;
-import ru.mipt.bit.platformer.game.ILevelGraphics;
-import ru.mipt.bit.platformer.game.ILevelModel;
-import ru.mipt.bit.platformer.game.ITankGraphics;
-import ru.mipt.bit.platformer.game.ITankInputHandler;
-import ru.mipt.bit.platformer.game.ITankModel;
-import ru.mipt.bit.platformer.game.ITreeGraphics;
-import ru.mipt.bit.platformer.game.ITreeModel;
-import ru.mipt.bit.platformer.game.LevelGraphics;
-import ru.mipt.bit.platformer.game.LevelModel;
-import ru.mipt.bit.platformer.game.LevelBounds;
 import ru.mipt.bit.platformer.game.MoveTankCommand;
-import ru.mipt.bit.platformer.game.MovementObstacleProvider;
 import ru.mipt.bit.platformer.game.RandomTankAI;
-import ru.mipt.bit.platformer.game.TankGraphics;
 import ru.mipt.bit.platformer.game.TankInputHandler;
-import ru.mipt.bit.platformer.game.TankAIController;
-import ru.mipt.bit.platformer.game.TankCommand;
-import ru.mipt.bit.platformer.game.TankModel;
+import ru.mipt.bit.platformer.game.ITankAIController;
+import ru.mipt.bit.platformer.game.ITankCommand;
 import ru.mipt.bit.platformer.game.ToggleHealthIndicatorCommand;
-import ru.mipt.bit.platformer.game.TreeGraphics;
-import ru.mipt.bit.platformer.game.TreeModel;
+import ru.mipt.bit.platformer.game.graphics.HealthIndicatorTankGraphics;
+import ru.mipt.bit.platformer.game.graphics.HealthIndicatorTankGraphics.Visibility;
+import ru.mipt.bit.platformer.game.graphics.ILevelGraphics;
+import ru.mipt.bit.platformer.game.graphics.ITankGraphics;
+import ru.mipt.bit.platformer.game.graphics.ITreeGraphics;
+import ru.mipt.bit.platformer.game.graphics.LevelGraphics;
+import ru.mipt.bit.platformer.game.graphics.TankGraphics;
+import ru.mipt.bit.platformer.game.graphics.TreeGraphics;
+import ru.mipt.bit.platformer.game.ITankInputHandler;
+import ru.mipt.bit.platformer.game.level.ILevelModel;
+import ru.mipt.bit.platformer.game.level.LevelModel;
 import ru.mipt.bit.platformer.game.level.LevelPopulation;
+import ru.mipt.bit.platformer.game.level.MovementObstacleProvider;
+import ru.mipt.bit.platformer.game.model.ITankModel;
+import ru.mipt.bit.platformer.game.model.ITreeModel;
+import ru.mipt.bit.platformer.game.model.TankModel;
+import ru.mipt.bit.platformer.game.model.TreeModel;
+import ru.mipt.bit.platformer.game.TankInputHandler;
 import ru.mipt.bit.platformer.util.Direction;
 
 public class DefaultGameFactory implements IGameFactory {
@@ -72,7 +72,7 @@ public class DefaultGameFactory implements IGameFactory {
             obstacleGraphics.add(new TreeGraphics(treeModel, levelModel.getGroundLayer()));
         }
 
-        HealthIndicatorVisibility healthIndicatorVisibility = new HealthIndicatorVisibility();
+        Visibility healthIndicatorVisibility = new Visibility();
 
         TankConfig tankConfig = gameConfig.createTankConfig(population.getPlayerSpawn());
         ITankModel playerTank = new TankModel(tankConfig);
@@ -97,8 +97,7 @@ public class DefaultGameFactory implements IGameFactory {
 
         MovementObstacleProvider obstacleProvider = new MovementObstacleProvider(obstacles, allTanks);
 
-        LevelBounds levelBounds = new LevelBounds(levelModel.getGroundLayer().getWidth(),
-                levelModel.getGroundLayer().getHeight());
+        LevelModel.LevelBounds levelBounds = levelModel.getBounds();
 
         TankInputHandler playerInputHandler = new TankInputHandler(direction ->
                 new MoveTankCommand(playerTank, direction,
@@ -107,9 +106,9 @@ public class DefaultGameFactory implements IGameFactory {
                 new ToggleHealthIndicatorCommand(healthIndicatorVisibility));
         ITankInputHandler tankInputHandler = playerInputHandler;
 
-        List<TankAIController> enemyControllers = new ArrayList<>();
+        List<ITankAIController> enemyControllers = new ArrayList<>();
         for (ITankModel enemyTank : enemyTanks) {
-            List<TankCommand> commands = new ArrayList<>();
+            List<ITankCommand> commands = new ArrayList<>();
             for (Direction direction : Direction.values()) {
                 commands.add(new MoveTankCommand(enemyTank, direction,
                         () -> obstacleProvider.getObstaclesFor(enemyTank), levelBounds));
@@ -130,11 +129,11 @@ public class DefaultGameFactory implements IGameFactory {
     }
 
     private ITankGraphics createTankGraphics(ITankModel tank,
-                                             ILevelModel levelModel,
-                                             HealthIndicatorVisibility healthIndicatorVisibility) {
+                                            ILevelModel levelModel,
+                                            Visibility visibility) {
         ITankGraphics baseGraphics = new TankGraphics(tank,
                 levelModel.getTileMovement(), levelModel.getGroundLayer());
-        return new HealthIndicatorTankGraphics(baseGraphics, tank, healthIndicatorVisibility);
+        return new HealthIndicatorTankGraphics(baseGraphics, tank, visibility);
     }
 
     private List<GridPoint2> generateEnemySpawns(TiledMapTileLayer groundLayer,

@@ -1,8 +1,9 @@
-package ru.mipt.bit.platformer.game;
+package ru.mipt.bit.platformer.game.graphics;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.MapRenderer;
 import com.badlogic.gdx.utils.Disposable;
+import ru.mipt.bit.platformer.game.level.ILevelModel;
 
 import static ru.mipt.bit.platformer.util.GdxGameUtils.createSingleLayerMapRenderer;
 

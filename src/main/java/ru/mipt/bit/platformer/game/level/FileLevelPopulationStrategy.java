@@ -2,7 +2,6 @@ package ru.mipt.bit.platformer.game.level;
 
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.GridPoint2;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class FileLevelPopulationStrategy implements LevelPopulationStrategy {
+public class FileLevelPopulationStrategy implements ILevelPopulationStrategy {
 
     private final String resourcePath;
 

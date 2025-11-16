@@ -2,6 +2,9 @@ package ru.mipt.bit.platformer.game;
 
 import com.badlogic.gdx.math.GridPoint2;
 import org.junit.jupiter.api.Test;
+import ru.mipt.bit.platformer.game.model.ITankModel;
+import ru.mipt.bit.platformer.game.model.ITreeModel;
+import ru.mipt.bit.platformer.game.model.TankObstacle;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -33,7 +36,8 @@ class TankObstacleTest {
         }
 
         @Override
-        public void attemptMove(ru.mipt.bit.platformer.util.Direction direction, Iterable<? extends ITreeModel> obstacles) {
+        public void attemptMove(ru.mipt.bit.platformer.util.Direction direction,
+                                Iterable<? extends ITreeModel> obstacles) {
             throw new UnsupportedOperationException();
         }
 

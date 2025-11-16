@@ -5,16 +5,16 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
-public class RandomTankAI implements TankAIController {
+public class RandomTankAI implements ITankAIController {
 
-    private final List<TankCommand> commands;
+    private final List<ITankCommand> commands;
     private final Random random;
 
-    public RandomTankAI(List<TankCommand> commands) {
+    public RandomTankAI(List<ITankCommand> commands) {
         this(commands, new Random());
     }
 
-    public RandomTankAI(List<TankCommand> commands, Random random) {
+    public RandomTankAI(List<ITankCommand> commands, Random random) {
         if (commands == null || commands.isEmpty()) {
             throw new IllegalArgumentException("Commands must not be null or empty");
         }

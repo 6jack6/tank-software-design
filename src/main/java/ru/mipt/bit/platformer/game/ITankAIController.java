@@ -1,6 +1,6 @@
 package ru.mipt.bit.platformer.game;
 
-public interface TankAIController {
+public interface ITankAIController {
 
     void update();
 }

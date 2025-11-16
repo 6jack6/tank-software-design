@@ -1,4 +1,4 @@
-package ru.mipt.bit.platformer.game;
+package ru.mipt.bit.platformer.game.model;
 
 import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.config.TreeConfig;
@@ -9,8 +9,7 @@ public class TreeModel implements ITreeModel {
     private final String texturePath;
 
     public TreeModel(TreeConfig config) {
-        GridPoint2 configCoordinates = config.getCoordinates();
-        this.coordinates = new GridPoint2(configCoordinates);
+        this.coordinates = new GridPoint2(config.getCoordinates());
         this.texturePath = config.getTexturePath();
     }
 

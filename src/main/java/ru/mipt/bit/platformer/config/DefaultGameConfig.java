@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 import ru.mipt.bit.platformer.game.level.FileLevelPopulationStrategy;
-import ru.mipt.bit.platformer.game.level.LevelPopulationStrategy;
+import ru.mipt.bit.platformer.game.level.ILevelPopulationStrategy;
 
 public class DefaultGameConfig {
 
@@ -31,13 +31,13 @@ public class DefaultGameConfig {
     private static final String DEFAULT_LEVEL_LAYOUT = "level.txt";
     private static final int ENEMY_TANK_COUNT = 3;
 
-    private final LevelPopulationStrategy levelPopulationStrategy;
+    private final ILevelPopulationStrategy levelPopulationStrategy;
 
     public DefaultGameConfig() {
         this(new FileLevelPopulationStrategy(DEFAULT_LEVEL_LAYOUT));
     }
 
-    public DefaultGameConfig(LevelPopulationStrategy levelPopulationStrategy) {
+    public DefaultGameConfig(ILevelPopulationStrategy levelPopulationStrategy) {
         this.levelPopulationStrategy = Objects.requireNonNull(levelPopulationStrategy);
     }
 
@@ -65,7 +65,7 @@ public class DefaultGameConfig {
         return new GraphicsConfig(CLEAR_COLOR_R, CLEAR_COLOR_G, CLEAR_COLOR_B, CLEAR_COLOR_A);
     }
 
-    public LevelPopulationStrategy getLevelPopulationStrategy() {
+    public ILevelPopulationStrategy getLevelPopulationStrategy() {
         return levelPopulationStrategy;
     }
 

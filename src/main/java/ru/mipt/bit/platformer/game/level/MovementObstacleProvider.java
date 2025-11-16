@@ -1,9 +1,12 @@
-package ru.mipt.bit.platformer.game;
+package ru.mipt.bit.platformer.game.level;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import ru.mipt.bit.platformer.game.model.ITankModel;
+import ru.mipt.bit.platformer.game.model.ITreeModel;
+import ru.mipt.bit.platformer.game.model.TankObstacle;
 
 public class MovementObstacleProvider {
 

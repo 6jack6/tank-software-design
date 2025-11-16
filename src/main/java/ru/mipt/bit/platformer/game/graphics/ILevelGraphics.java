@@ -1,4 +1,4 @@
-package ru.mipt.bit.platformer.game;
+package ru.mipt.bit.platformer.game.graphics;
 
 import com.badlogic.gdx.utils.Disposable;
 

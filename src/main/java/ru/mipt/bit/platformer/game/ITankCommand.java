@@ -1,6 +1,6 @@
 package ru.mipt.bit.platformer.game;
 
-public interface TankCommand {
+public interface ITankCommand {
 
     void execute();
 }

@@ -25,7 +25,7 @@ class RandomTankAITest {
         assertThrows(IllegalArgumentException.class, () -> new RandomTankAI(List.of(), new java.util.Random()));
     }
 
-    private static final class CountingCommand implements TankCommand {
+    private static final class CountingCommand implements ITankCommand {
         private final AtomicInteger invocations = new AtomicInteger();
 
         @Override

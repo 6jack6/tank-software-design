@@ -9,19 +9,19 @@ import java.util.List;
 import ru.mipt.bit.platformer.config.DefaultGameConfig;
 import ru.mipt.bit.platformer.config.GraphicsConfig;
 import ru.mipt.bit.platformer.config.WindowConfig;
-import ru.mipt.bit.platformer.game.ILevelGraphics;
-import ru.mipt.bit.platformer.game.ILevelModel;
-import ru.mipt.bit.platformer.game.ITankGraphics;
 import ru.mipt.bit.platformer.game.ITankInputHandler;
-import ru.mipt.bit.platformer.game.ITankModel;
-import ru.mipt.bit.platformer.game.ITreeGraphics;
-import ru.mipt.bit.platformer.game.TankAIController;
+import ru.mipt.bit.platformer.game.ITankAIController;
 import ru.mipt.bit.platformer.game.factory.DefaultGameFactory;
 import ru.mipt.bit.platformer.game.factory.GameContext;
 import ru.mipt.bit.platformer.game.factory.IGameFactory;
+import ru.mipt.bit.platformer.game.graphics.ILevelGraphics;
+import ru.mipt.bit.platformer.game.graphics.ITankGraphics;
+import ru.mipt.bit.platformer.game.graphics.ITreeGraphics;
 import ru.mipt.bit.platformer.game.level.FileLevelPopulationStrategy;
-import ru.mipt.bit.platformer.game.level.LevelPopulationStrategy;
+import ru.mipt.bit.platformer.game.level.ILevelModel;
+import ru.mipt.bit.platformer.game.level.ILevelPopulationStrategy;
 import ru.mipt.bit.platformer.game.level.RandomLevelPopulationStrategy;
+import ru.mipt.bit.platformer.game.model.ITankModel;
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 
@@ -39,7 +39,7 @@ public class GameDesktopLauncher implements ApplicationListener {
     private ITankInputHandler tankInputHandler;
     private List<ITankModel> enemyTanks;
     private List<ITankGraphics> enemyTankGraphics;
-    private List<TankAIController> enemyControllers;
+    private List<ITankAIController> enemyControllers;
     private List<ITreeGraphics> obstacleGraphics;
     private GraphicsConfig graphicsConfig;
 
@@ -72,7 +72,7 @@ public class GameDesktopLauncher implements ApplicationListener {
         float deltaTime = Gdx.graphics.getDeltaTime();
 
         tankInputHandler.handleInput();
-        for (TankAIController controller : enemyControllers) {
+        for (ITankAIController controller : enemyControllers) {
             controller.update();
         }
 
@@ -137,14 +137,14 @@ public class GameDesktopLauncher implements ApplicationListener {
     }
 
     private static DefaultGameConfig createGameConfig(String[] args) {
-        LevelPopulationStrategy strategy = resolveLevelPopulationStrategy(args);
+        ILevelPopulationStrategy strategy = resolveLevelPopulationStrategy(args);
         if (strategy == null) {
             return new DefaultGameConfig();
         }
         return new DefaultGameConfig(strategy);
     }
 
-    private static LevelPopulationStrategy resolveLevelPopulationStrategy(String[] args) {
+    private static ILevelPopulationStrategy resolveLevelPopulationStrategy(String[] args) {
         for (String arg : args) {
             if (arg.startsWith(RANDOM_FLAG)) {
                 int treeCount = DEFAULT_RANDOM_TREES;

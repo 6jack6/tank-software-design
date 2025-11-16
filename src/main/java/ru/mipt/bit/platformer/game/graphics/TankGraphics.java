@@ -1,10 +1,11 @@
-package ru.mipt.bit.platformer.game;
+package ru.mipt.bit.platformer.game.graphics;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
+import ru.mipt.bit.platformer.game.model.ITankModel;
 import ru.mipt.bit.platformer.util.TileMovement;
 
 import static ru.mipt.bit.platformer.util.GdxGameUtils.createBoundingRectangle;
@@ -20,7 +21,7 @@ public class TankGraphics implements ITankGraphics {
     private final TileMovement tileMovement;
 
     public TankGraphics(ITankModel model, TileMovement tileMovement,
-                            TiledMapTileLayer tileLayer) {
+                        TiledMapTileLayer tileLayer) {
         this.model = model;
         this.texture = new Texture(model.getTexturePath());
         this.graphics = new TextureRegion(texture);

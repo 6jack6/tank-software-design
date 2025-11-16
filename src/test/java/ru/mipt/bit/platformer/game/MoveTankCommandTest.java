@@ -5,6 +5,9 @@ import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
+import ru.mipt.bit.platformer.game.level.LevelModel.LevelBounds;
+import ru.mipt.bit.platformer.game.model.ITankModel;
+import ru.mipt.bit.platformer.game.model.ITreeModel;
 import ru.mipt.bit.platformer.util.Direction;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
