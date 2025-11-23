@@ -6,31 +6,24 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import java.util.List;
-import ru.mipt.bit.platformer.config.DefaultGameConfig;
 import ru.mipt.bit.platformer.config.GraphicsConfig;
-import ru.mipt.bit.platformer.config.WindowConfig;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import ru.mipt.bit.platformer.config.GameApplicationConfiguration;
+import ru.mipt.bit.platformer.config.GameArguments;
 import ru.mipt.bit.platformer.game.ITankInputHandler;
 import ru.mipt.bit.platformer.game.ITankAIController;
-import ru.mipt.bit.platformer.game.factory.DefaultGameFactory;
 import ru.mipt.bit.platformer.game.factory.GameContext;
 import ru.mipt.bit.platformer.game.factory.IGameFactory;
 import ru.mipt.bit.platformer.game.graphics.IBulletGraphics;
 import ru.mipt.bit.platformer.game.graphics.ILevelGraphics;
 import ru.mipt.bit.platformer.game.graphics.ITankGraphics;
 import ru.mipt.bit.platformer.game.graphics.ITreeGraphics;
-import ru.mipt.bit.platformer.game.level.FileLevelPopulationStrategy;
 import ru.mipt.bit.platformer.game.level.ILevelModel;
-import ru.mipt.bit.platformer.game.level.ILevelPopulationStrategy;
-import ru.mipt.bit.platformer.game.level.RandomLevelPopulationStrategy;
 import ru.mipt.bit.platformer.game.model.TankModel;
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 
 public class GameDesktopLauncher implements ApplicationListener {
-    private static final String RANDOM_FLAG = "--random";
-    private static final String LAYOUT_PREFIX = "--layout=";
-    private static final int DEFAULT_RANDOM_TREES = 12;
-
     private final IGameFactory gameFactory;
     private Batch batch;
     private ILevelModel levelModel;
@@ -141,56 +134,15 @@ public class GameDesktopLauncher implements ApplicationListener {
     }
 
     public static void main(String[] args) {
-        Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
-        DefaultGameConfig gameConfig = createGameConfig(args);
-        IGameFactory gameFactory = new DefaultGameFactory(gameConfig);
-        WindowConfig windowConfig = gameFactory.getWindowConfig();
-        config.setWindowedMode(windowConfig.getWidth(), windowConfig.getHeight());
-        new Lwjgl3Application(new GameDesktopLauncher(gameFactory), config);
-    }
+        try (AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext()) {
+            context.register(GameApplicationConfiguration.class);
+            context.registerBean(GameArguments.class, () -> new GameArguments(args));
+            context.refresh();
 
-    private static DefaultGameConfig createGameConfig(String[] args) {
-        ILevelPopulationStrategy strategy = resolveLevelPopulationStrategy(args);
-        if (strategy == null) {
-            return new DefaultGameConfig();
-        }
-        return new DefaultGameConfig(strategy);
-    }
-
-    private static ILevelPopulationStrategy resolveLevelPopulationStrategy(String[] args) {
-        for (String arg : args) {
-            if (arg.startsWith(RANDOM_FLAG)) {
-                int treeCount = DEFAULT_RANDOM_TREES;
-                int equalsIndex = arg.indexOf('=');
-                if (equalsIndex >= 0) {
-                    String value = arg.substring(equalsIndex + 1);
-                    if (value.isEmpty()) {
-                        throw new IllegalArgumentException("Tree count value in --random must not be empty");
-                    }
-                    treeCount = parseTreeCount(value);
-                }
-                return new RandomLevelPopulationStrategy(treeCount);
-            }
-            if (arg.startsWith(LAYOUT_PREFIX)) {
-                String path = arg.substring(LAYOUT_PREFIX.length());
-                if (path.isEmpty()) {
-                    throw new IllegalArgumentException("Layout path must not be empty");
-                }
-                return new FileLevelPopulationStrategy(path);
-            }
-        }
-        return null;
-    }
-
-    private static int parseTreeCount(String value) {
-        try {
-            int count = Integer.parseInt(value);
-            if (count < 0) {
-                throw new IllegalArgumentException("Tree count must be non-negative");
-            }
-            return count;
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Failed to parse tree count: " + value, e);
+            Lwjgl3ApplicationConfiguration lwjglConfig =
+                    context.getBean(Lwjgl3ApplicationConfiguration.class);
+            GameDesktopLauncher launcher = context.getBean(GameDesktopLauncher.class);
+            new Lwjgl3Application(launcher, lwjglConfig);
         }
     }
 }
