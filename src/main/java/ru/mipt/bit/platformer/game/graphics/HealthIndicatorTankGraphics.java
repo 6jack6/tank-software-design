@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
 import java.util.Objects;
-import ru.mipt.bit.platformer.game.model.ITankModel;
+import ru.mipt.bit.platformer.game.model.TankModel;
 
 import static com.badlogic.gdx.math.MathUtils.clamp;
 
@@ -20,12 +20,12 @@ public class HealthIndicatorTankGraphics implements ITankGraphics {
     private static final Color BAR_FILL = new Color(0.1f, 0.85f, 0.1f, 1f);
 
     private final ITankGraphics delegate;
-    private final ITankModel model;
+    private final TankModel model;
     private final Visibility visibility;
     private final Texture pixelTexture;
 
     public HealthIndicatorTankGraphics(ITankGraphics delegate,
-                                       ITankModel model,
+                                       TankModel model,
                                        Visibility visibility) {
         this.delegate = Objects.requireNonNull(delegate);
         this.model = Objects.requireNonNull(model);

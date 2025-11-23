@@ -5,13 +5,13 @@ import java.util.Objects;
 import ru.mipt.bit.platformer.game.level.LevelModel;
 import ru.mipt.bit.platformer.util.Direction;
 
-public class BulletModel {
+public class BulletModel implements GameObject {
 
     private static final float DEFAULT_SPEED = 5f;
     private static final int DEFAULT_DAMAGE = 25;
 
     private final LevelModel levelModel;
-    private final ITankModel owner;
+    private final TankModel owner;
     private final Direction direction;
     private final GridPoint2 coordinates;
     private final float tilesPerSecond;
@@ -21,14 +21,14 @@ public class BulletModel {
     private boolean active = true;
 
     public BulletModel(LevelModel levelModel,
-                       ITankModel owner,
+                       TankModel owner,
                        GridPoint2 coordinates,
                        Direction direction) {
         this(levelModel, owner, coordinates, direction, DEFAULT_DAMAGE, DEFAULT_SPEED);
     }
 
     public BulletModel(LevelModel levelModel,
-                       ITankModel owner,
+                       TankModel owner,
                        GridPoint2 coordinates,
                        Direction direction,
                        int damage,
@@ -41,6 +41,7 @@ public class BulletModel {
         this.tilesPerSecond = tilesPerSecond;
     }
 
+    @Override
     public GridPoint2 getCoordinates() {
         return coordinates;
     }
@@ -57,6 +58,16 @@ public class BulletModel {
         active = false;
     }
 
+    @Override
+    public String getTexturePath() {
+        return "";
+    }
+
+    public boolean isDestroyed() {
+        return !active;
+    }
+
+    @Override
     public void update(float deltaTime) {
         if (!active) {
             return;
@@ -78,7 +89,7 @@ public class BulletModel {
             markRemoved();
             return;
         }
-        ITankModel tank = levelModel.findTank(next);
+        TankModel tank = levelModel.findTank(next);
         if (tank != null && tank != owner) {
             tank.applyDamage(damage);
             if (tank.isDestroyed()) {

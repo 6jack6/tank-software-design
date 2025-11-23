@@ -25,6 +25,7 @@ import ru.mipt.bit.platformer.game.ITankCommand;
 import ru.mipt.bit.platformer.game.ITankInputHandler;
 import ru.mipt.bit.platformer.game.MoveTankCommand;
 import ru.mipt.bit.platformer.game.RandomTankAI;
+import ru.mipt.bit.platformer.game.RareCommand;
 import ru.mipt.bit.platformer.game.ShootTankCommand;
 import ru.mipt.bit.platformer.game.TankInputHandler;
 import ru.mipt.bit.platformer.game.ToggleHealthIndicatorCommand;
@@ -44,8 +45,6 @@ import ru.mipt.bit.platformer.game.level.LevelObjectEvent;
 import ru.mipt.bit.platformer.game.level.LevelObjectType;
 import ru.mipt.bit.platformer.game.level.LevelPopulation;
 import ru.mipt.bit.platformer.game.level.MovementObstacleProvider;
-import ru.mipt.bit.platformer.game.model.ITankModel;
-import ru.mipt.bit.platformer.game.model.ITreeModel;
 import ru.mipt.bit.platformer.game.model.TankModel;
 import ru.mipt.bit.platformer.game.model.TreeModel;
 import ru.mipt.bit.platformer.util.Direction;
@@ -77,22 +76,22 @@ public class DefaultGameFactory implements IGameFactory {
         List<GridPoint2> treeCoordinates = population.getTreeCoordinates();
         List<TreeConfig> treeConfigs = gameConfig.createTreeConfigs(treeCoordinates);
         for (TreeConfig treeConfig : treeConfigs) {
-            ITreeModel treeModel = new TreeModel(treeConfig);
+            TreeModel treeModel = new TreeModel(treeConfig);
             levelModel.addTree(treeModel);
         }
 
         TankConfig tankConfig = gameConfig.createTankConfig(population.getPlayerSpawn());
-        ITankModel playerTank = new TankModel(tankConfig);
+        TankModel playerTank = new TankModel(tankConfig);
         levelModel.addPlayerTank(playerTank);
 
         List<GridPoint2> enemySpawns = generateEnemySpawns(levelModel.getGroundLayer(),
                 population.getPlayerSpawn(), treeCoordinates, gameConfig.getEnemyTankCount());
         for (GridPoint2 spawn : enemySpawns) {
             TankConfig enemyConfig = gameConfig.createEnemyTankConfig(spawn);
-            ITankModel enemyTank = new TankModel(enemyConfig);
+            TankModel enemyTank = new TankModel(enemyConfig);
             levelModel.addEnemyTank(enemyTank);
         }
-        List<ITankModel> enemyTanks = levelModel.getEnemyTanks();
+        List<TankModel> enemyTanks = levelModel.getEnemyTanks();
 
         MovementObstacleProvider obstacleProvider = new MovementObstacleProvider(levelModel);
 
@@ -108,14 +107,15 @@ public class DefaultGameFactory implements IGameFactory {
         ITankInputHandler tankInputHandler = playerInputHandler;
 
         List<ITankAIController> enemyControllers = new ArrayList<>();
-        Map<ITankModel, ITankAIController> controllerByTank = new IdentityHashMap<>();
-        for (ITankModel enemyTank : enemyTanks) {
+        Map<TankModel, ITankAIController> controllerByTank = new IdentityHashMap<>();
+        Random shootRandom = new Random();
+        for (TankModel enemyTank : enemyTanks) {
             List<ITankCommand> commands = new ArrayList<>();
             for (Direction direction : Direction.values()) {
                 commands.add(new MoveTankCommand(enemyTank, direction,
                         () -> obstacleProvider.getObstaclesFor(enemyTank), levelBounds));
             }
-            commands.add(new ShootTankCommand(levelModel, enemyTank));
+            commands.add(new RareCommand(new ShootTankCommand(levelModel, enemyTank), shootRandom, 10));
             RandomTankAI controller = new RandomTankAI(commands);
             enemyControllers.add(controller);
             controllerByTank.put(enemyTank, controller);
@@ -130,7 +130,7 @@ public class DefaultGameFactory implements IGameFactory {
             @Override
             public void onObjectRemoved(LevelObjectEvent event) {
                 if (event.getType() == LevelObjectType.ENEMY_TANK) {
-                    ITankModel removedTank = event.getModel();
+                    TankModel removedTank = event.getModel();
                     ITankAIController controller = controllerByTank.remove(removedTank);
                     if (controller != null) {
                         enemyControllers.remove(controller);
@@ -157,7 +157,7 @@ public class DefaultGameFactory implements IGameFactory {
         return gameConfig.createWindowConfig();
     }
 
-    private ITankGraphics createTankGraphics(ITankModel tank,
+    private ITankGraphics createTankGraphics(TankModel tank,
                                             ILevelModel levelModel,
                                             Visibility visibility) {
         ITankGraphics baseGraphics = new TankGraphics(tank,

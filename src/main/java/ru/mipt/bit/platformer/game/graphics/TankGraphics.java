@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
-import ru.mipt.bit.platformer.game.model.ITankModel;
+import ru.mipt.bit.platformer.game.model.TankModel;
 import ru.mipt.bit.platformer.util.TileMovement;
 
 import static ru.mipt.bit.platformer.util.GdxGameUtils.createBoundingRectangle;
@@ -14,13 +14,13 @@ import static ru.mipt.bit.platformer.util.GdxGameUtils.moveRectangleAtTileCenter
 
 public class TankGraphics implements ITankGraphics {
 
-    private final ITankModel model;
+    private final TankModel model;
     private final Texture texture;
     private final TextureRegion graphics;
     private final Rectangle bounds;
     private final TileMovement tileMovement;
 
-    public TankGraphics(ITankModel model, TileMovement tileMovement,
+    public TankGraphics(TankModel model, TileMovement tileMovement,
                         TiledMapTileLayer tileLayer) {
         this.model = model;
         this.texture = new Texture(model.getTexturePath());

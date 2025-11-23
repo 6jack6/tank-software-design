@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Objects;
 import ru.mipt.bit.platformer.config.LevelConfig;
 import ru.mipt.bit.platformer.game.model.BulletModel;
-import ru.mipt.bit.platformer.game.model.ITankModel;
-import ru.mipt.bit.platformer.game.model.ITreeModel;
+import ru.mipt.bit.platformer.game.model.TankModel;
+import ru.mipt.bit.platformer.game.model.TreeModel;
 import ru.mipt.bit.platformer.util.TileMovement;
 
 import static ru.mipt.bit.platformer.util.GdxGameUtils.getSingleLayer;
@@ -24,11 +24,11 @@ public class LevelModel implements ILevelModel {
     private final TileMovement tileMovement;
     private final LevelBounds bounds;
     private final List<ILevelObserver> observers = new ArrayList<>();
-    private final List<ITreeModel> trees = new ArrayList<>();
-    private final List<ITankModel> enemyTanks = new ArrayList<>();
+    private final List<TreeModel> trees = new ArrayList<>();
+    private final List<TankModel> enemyTanks = new ArrayList<>();
     private final List<BulletModel> bullets = new ArrayList<>();
 
-    private ITankModel playerTank;
+    private TankModel playerTank;
 
     public LevelModel(LevelConfig config) {
         map = new TmxMapLoader().load(config.getMapPath());
@@ -59,22 +59,22 @@ public class LevelModel implements ILevelModel {
         }
     }
 
-    public void addTree(ITreeModel tree) {
+    public void addTree(TreeModel tree) {
         trees.add(tree);
         notifyAdded(LevelObjectType.TREE, tree);
     }
 
-    public void addPlayerTank(ITankModel tank) {
+    public void addPlayerTank(TankModel tank) {
         playerTank = tank;
         notifyAdded(LevelObjectType.PLAYER_TANK, tank);
     }
 
-    public void addEnemyTank(ITankModel tank) {
+    public void addEnemyTank(TankModel tank) {
         enemyTanks.add(tank);
         notifyAdded(LevelObjectType.ENEMY_TANK, tank);
     }
 
-    public void removeTank(ITankModel tank) {
+    public void removeTank(TankModel tank) {
         if (tank == null) {
             return;
         }
@@ -112,23 +112,23 @@ public class LevelModel implements ILevelModel {
     }
 
     @Override
-    public List<ITreeModel> getTrees() {
+    public List<TreeModel> getTrees() {
         return Collections.unmodifiableList(trees);
     }
 
     @Override
-    public List<ITankModel> getEnemyTanks() {
+    public List<TankModel> getEnemyTanks() {
         return Collections.unmodifiableList(enemyTanks);
     }
 
     @Override
-    public ITankModel getPlayerTank() {
+    public TankModel getPlayerTank() {
         return playerTank;
     }
 
     @Override
-    public List<ITankModel> getAllTanks() {
-        List<ITankModel> result = new ArrayList<>(enemyTanks);
+    public List<TankModel> getAllTanks() {
+        List<TankModel> result = new ArrayList<>(enemyTanks);
         if (playerTank != null) {
             result.add(playerTank);
         }
@@ -151,11 +151,11 @@ public class LevelModel implements ILevelModel {
         return bounds.contains(coordinates);
     }
 
-    public ITankModel findTank(GridPoint2 coordinates) {
+    public TankModel findTank(GridPoint2 coordinates) {
         if (playerTank != null && playerTank.getCoordinates().equals(coordinates)) {
             return playerTank;
         }
-        for (ITankModel tank : enemyTanks) {
+        for (TankModel tank : enemyTanks) {
             if (tank.getCoordinates().equals(coordinates)) {
                 return tank;
             }
@@ -163,11 +163,11 @@ public class LevelModel implements ILevelModel {
         return null;
     }
 
-    public ITankModel findTankByDestination(GridPoint2 coordinates) {
+    public TankModel findTankByDestination(GridPoint2 coordinates) {
         if (playerTank != null && playerTank.getDestination().equals(coordinates)) {
             return playerTank;
         }
-        for (ITankModel tank : enemyTanks) {
+        for (TankModel tank : enemyTanks) {
             if (tank.getDestination().equals(coordinates)) {
                 return tank;
             }
@@ -175,8 +175,8 @@ public class LevelModel implements ILevelModel {
         return null;
     }
 
-    public ITreeModel findTree(GridPoint2 coordinates) {
-        for (ITreeModel tree : trees) {
+    public TreeModel findTree(GridPoint2 coordinates) {
+        for (TreeModel tree : trees) {
             if (tree.getCoordinates().equals(coordinates)) {
                 return tree;
             }

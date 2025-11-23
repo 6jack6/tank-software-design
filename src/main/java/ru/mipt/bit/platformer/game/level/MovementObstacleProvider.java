@@ -4,15 +4,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import ru.mipt.bit.platformer.game.model.ITankModel;
-import ru.mipt.bit.platformer.game.model.ITreeModel;
+import ru.mipt.bit.platformer.game.model.BlockingObject;
+import ru.mipt.bit.platformer.game.model.TankModel;
 import ru.mipt.bit.platformer.game.model.TankObstacle;
+import ru.mipt.bit.platformer.game.model.TreeModel;
 
 public class MovementObstacleProvider {
 
     private final ILevelModel levelModel;
-    private final List<ITreeModel> fallbackTrees;
-    private final List<ITankModel> fallbackTanks;
+    private final List<TreeModel> fallbackTrees;
+    private final List<TankModel> fallbackTanks;
 
     public MovementObstacleProvider(ILevelModel levelModel) {
         this.levelModel = Objects.requireNonNull(levelModel);
@@ -20,19 +21,19 @@ public class MovementObstacleProvider {
         this.fallbackTanks = null;
     }
 
-    public MovementObstacleProvider(List<ITreeModel> staticObstacles,
-                                    List<ITankModel> tanks) {
+    public MovementObstacleProvider(List<? extends TreeModel> staticObstacles,
+                                    List<? extends TankModel> tanks) {
         this.levelModel = null;
         this.fallbackTrees = Collections.unmodifiableList(new ArrayList<>(Objects.requireNonNull(staticObstacles)));
         this.fallbackTanks = Collections.unmodifiableList(new ArrayList<>(Objects.requireNonNull(tanks)));
     }
 
-    public Iterable<ITreeModel> getObstaclesFor(ITankModel tank) {
-        List<ITreeModel> result = new ArrayList<>();
-        List<ITreeModel> trees = fallbackTrees != null ? fallbackTrees : levelModel.getTrees();
-        List<ITankModel> tanks = fallbackTanks != null ? fallbackTanks : levelModel.getAllTanks();
+    public Iterable<BlockingObject> getObstaclesFor(TankModel tank) {
+        List<BlockingObject> result = new ArrayList<>();
+        List<TreeModel> trees = fallbackTrees != null ? fallbackTrees : levelModel.getTrees();
+        List<TankModel> tanks = fallbackTanks != null ? fallbackTanks : levelModel.getAllTanks();
         result.addAll(trees);
-        for (ITankModel other : tanks) {
+        for (TankModel other : tanks) {
             if (other == tank) {
                 continue;
             }

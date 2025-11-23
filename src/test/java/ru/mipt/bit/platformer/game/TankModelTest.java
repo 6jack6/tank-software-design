@@ -5,9 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import ru.mipt.bit.platformer.config.TankConfig;
-import ru.mipt.bit.platformer.game.model.ITankModel;
-import ru.mipt.bit.platformer.game.model.ITreeModel;
+import ru.mipt.bit.platformer.config.TreeConfig;
 import ru.mipt.bit.platformer.game.model.TankModel;
+import ru.mipt.bit.platformer.game.model.TreeModel;
 import ru.mipt.bit.platformer.util.Direction;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,7 +19,7 @@ class TankModelTest {
 
     @Test
     void movesToRequestedTileWhenUnblocked() {
-        ITankModel tank = new TankModel(CONFIG);
+        TankModel tank = new TankModel(CONFIG);
 
         tank.attemptMove(Direction.UP, Collections.emptyList());
 
@@ -28,8 +28,8 @@ class TankModelTest {
 
     @Test
     void staysInPlaceWhenBlockedByObstacle() {
-        ITankModel tank = new TankModel(CONFIG);
-        ITreeModel blockingTree = new FixedObstacle(new GridPoint2(0, 1));
+        TankModel tank = new TankModel(CONFIG);
+        TreeModel blockingTree = new TreeModel(new TreeConfig("tree.png", new GridPoint2(0, 1)));
 
         tank.attemptMove(Direction.UP, List.of(blockingTree));
 
@@ -38,7 +38,7 @@ class TankModelTest {
 
     @Test
     void updatesCoordinatesAfterCompletingMovement() {
-        ITankModel tank = new TankModel(CONFIG);
+        TankModel tank = new TankModel(CONFIG);
         tank.attemptMove(Direction.RIGHT, Collections.emptyList());
 
         tank.update(0.5f);
@@ -49,33 +49,10 @@ class TankModelTest {
 
     @Test
     void healthPointsAreWithinExpectedRange() {
-        ITankModel tank = new TankModel(CONFIG);
+        TankModel tank = new TankModel(CONFIG);
 
         assertTrue(tank.getHealthPoints() >= 80 && tank.getHealthPoints() <= 100,
                 "Health points should be between 80 and 100 inclusive");
     }
 
-    private static final class FixedObstacle implements ITreeModel {
-
-        private final GridPoint2 coordinates;
-
-        private FixedObstacle(GridPoint2 coordinates) {
-            this.coordinates = coordinates;
-        }
-
-        @Override
-        public boolean blocks(GridPoint2 tileCoordinates) {
-            return coordinates.equals(tileCoordinates);
-        }
-
-        @Override
-        public GridPoint2 getCoordinates() {
-            return coordinates;
-        }
-
-        @Override
-        public String getTexturePath() {
-            return "tree.png";
-        }
-    }
 }

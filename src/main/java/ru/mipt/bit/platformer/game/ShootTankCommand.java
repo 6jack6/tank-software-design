@@ -4,15 +4,15 @@ import com.badlogic.gdx.math.GridPoint2;
 import java.util.Objects;
 import ru.mipt.bit.platformer.game.level.LevelModel;
 import ru.mipt.bit.platformer.game.model.BulletModel;
-import ru.mipt.bit.platformer.game.model.ITankModel;
+import ru.mipt.bit.platformer.game.model.TankModel;
 import ru.mipt.bit.platformer.util.Direction;
 
 public class ShootTankCommand implements ITankCommand {
 
     private final LevelModel levelModel;
-    private final ITankModel shooter;
+    private final TankModel shooter;
 
-    public ShootTankCommand(LevelModel levelModel, ITankModel shooter) {
+    public ShootTankCommand(LevelModel levelModel, TankModel shooter) {
         this.levelModel = Objects.requireNonNull(levelModel);
         this.shooter = Objects.requireNonNull(shooter);
     }
@@ -27,7 +27,7 @@ public class ShootTankCommand implements ITankCommand {
         if (levelModel.findTree(spawn) != null) {
             return;
         }
-        ITankModel tankAtSpawn = levelModel.findTank(spawn);
+        TankModel tankAtSpawn = levelModel.findTank(spawn);
         if (tankAtSpawn != null && tankAtSpawn != shooter) {
             return;
         }

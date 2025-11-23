@@ -4,21 +4,21 @@ import com.badlogic.gdx.math.GridPoint2;
 import java.util.Objects;
 import java.util.function.Supplier;
 import ru.mipt.bit.platformer.game.level.LevelModel.LevelBounds;
-import ru.mipt.bit.platformer.game.model.ITankModel;
-import ru.mipt.bit.platformer.game.model.ITreeModel;
+import ru.mipt.bit.platformer.game.model.BlockingObject;
+import ru.mipt.bit.platformer.game.model.TankModel;
 import ru.mipt.bit.platformer.util.Direction;
 
 public class MoveTankCommand implements ITankCommand {
 
-    private final ITankModel tank;
+    private final TankModel tank;
     private final Direction direction;
-    private final Supplier<Iterable<? extends ITreeModel>> obstaclesSupplier;
+    private final Supplier<Iterable<? extends BlockingObject>> obstaclesSupplier;
     private final LevelBounds levelBounds;
     private final GridPoint2 candidate = new GridPoint2();
 
-    public MoveTankCommand(ITankModel tank,
+    public MoveTankCommand(TankModel tank,
                            Direction direction,
-                           Supplier<Iterable<? extends ITreeModel>> obstaclesSupplier,
+                           Supplier<Iterable<? extends BlockingObject>> obstaclesSupplier,
                            LevelBounds levelBounds) {
         this.tank = Objects.requireNonNull(tank);
         this.direction = Objects.requireNonNull(direction);

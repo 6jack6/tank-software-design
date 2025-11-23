@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Rectangle;
-import ru.mipt.bit.platformer.game.model.ITreeModel;
+import ru.mipt.bit.platformer.game.model.TreeModel;
 
 import static ru.mipt.bit.platformer.util.GdxGameUtils.createBoundingRectangle;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.drawTextureRegionUnscaled;
@@ -13,12 +13,12 @@ import static ru.mipt.bit.platformer.util.GdxGameUtils.moveRectangleAtTileCenter
 
 public class TreeGraphics implements ITreeGraphics {
 
-    private final ITreeModel model;
+    private final TreeModel model;
     private final Texture texture;
     private final TextureRegion graphics;
     private final Rectangle bounds;
 
-    public TreeGraphics(ITreeModel model, TiledMapTileLayer tileLayer) {
+    public TreeGraphics(TreeModel model, TiledMapTileLayer tileLayer) {
         this.model = model;
         this.texture = new Texture(model.getTexturePath());
         this.graphics = new TextureRegion(texture);

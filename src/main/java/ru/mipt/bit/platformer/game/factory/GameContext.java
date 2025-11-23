@@ -11,18 +11,18 @@ import ru.mipt.bit.platformer.game.graphics.ILevelGraphics;
 import ru.mipt.bit.platformer.game.graphics.ITankGraphics;
 import ru.mipt.bit.platformer.game.graphics.ITreeGraphics;
 import ru.mipt.bit.platformer.game.level.ILevelModel;
-import ru.mipt.bit.platformer.game.model.ITankModel;
+import ru.mipt.bit.platformer.game.model.TankModel;
 
 public class GameContext {
 
     private final Batch batch;
     private final ILevelModel levelModel;
     private final ILevelGraphics levelGraphics;
-    private final ITankModel tankModel;
+    private final TankModel tankModel;
     private final ITankGraphics tankGraphics;
     private final ITankInputHandler tankInputHandler;
     private final List<ITreeGraphics> obstacleGraphics;
-    private final List<ITankModel> enemyTanks;
+    private final List<TankModel> enemyTanks;
     private final List<ITankGraphics> enemyTankGraphics;
     private final List<IBulletGraphics> bulletGraphics;
     private final List<ITankAIController> enemyControllers;
@@ -31,11 +31,11 @@ public class GameContext {
     public GameContext(Batch batch,
                        ILevelModel levelModel,
                        ILevelGraphics levelGraphics,
-                       ITankModel tankModel,
+                       TankModel tankModel,
                        ITankGraphics tankGraphics,
                        ITankInputHandler tankInputHandler,
                        List<ITreeGraphics> obstacleGraphics,
-                       List<ITankModel> enemyTanks,
+                       List<TankModel> enemyTanks,
                        List<ITankGraphics> enemyTankGraphics,
                        List<IBulletGraphics> bulletGraphics,
                        List<ITankAIController> enemyControllers,
@@ -66,7 +66,7 @@ public class GameContext {
         return levelGraphics;
     }
 
-    public ITankModel getTankModel() {
+    public TankModel getTankModel() {
         return tankModel;
     }
 
@@ -82,7 +82,7 @@ public class GameContext {
         return obstacleGraphics;
     }
 
-    public List<ITankModel> getEnemyTanks() {
+    public List<TankModel> getEnemyTanks() {
         return enemyTanks;
     }
 

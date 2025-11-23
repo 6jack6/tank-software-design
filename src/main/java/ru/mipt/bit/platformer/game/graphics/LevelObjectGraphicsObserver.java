@@ -10,13 +10,13 @@ import ru.mipt.bit.platformer.game.level.ILevelModel;
 import ru.mipt.bit.platformer.game.level.LevelObjectEvent;
 import ru.mipt.bit.platformer.game.level.LevelObjectType;
 import ru.mipt.bit.platformer.game.model.BulletModel;
-import ru.mipt.bit.platformer.game.model.ITankModel;
-import ru.mipt.bit.platformer.game.model.ITreeModel;
+import ru.mipt.bit.platformer.game.model.TankModel;
+import ru.mipt.bit.platformer.game.model.TreeModel;
 
 public class LevelObjectGraphicsObserver implements ILevelObserver {
 
     private final ILevelModel levelModel;
-    private final Function<ITankModel, ITankGraphics> tankGraphicsFactory;
+    private final Function<TankModel, ITankGraphics> tankGraphicsFactory;
     private final List<ITreeGraphics> treeGraphics = new ArrayList<>();
     private final List<ITankGraphics> enemyTankGraphics = new ArrayList<>();
     private final List<IBulletGraphics> bulletGraphics = new ArrayList<>();
@@ -25,7 +25,7 @@ public class LevelObjectGraphicsObserver implements ILevelObserver {
     private ITankGraphics playerTankGraphics;
 
     public LevelObjectGraphicsObserver(ILevelModel levelModel,
-                                       Function<ITankModel, ITankGraphics> tankGraphicsFactory) {
+                                       Function<TankModel, ITankGraphics> tankGraphicsFactory) {
         this.levelModel = levelModel;
         this.tankGraphicsFactory = tankGraphicsFactory;
     }
@@ -35,16 +35,16 @@ public class LevelObjectGraphicsObserver implements ILevelObserver {
         LevelObjectType type = event.getType();
         switch (type) {
             case TREE:
-                addTreeGraphics(event.getModel());
+                addTreeGraphics((TreeModel) event.getModel());
                 break;
             case PLAYER_TANK:
-                addPlayerTankGraphics(event.getModel());
+                addPlayerTankGraphics((TankModel) event.getModel());
                 break;
             case ENEMY_TANK:
-                addEnemyTankGraphics(event.getModel());
+                addEnemyTankGraphics((TankModel) event.getModel());
                 break;
             case BULLET:
-                addBulletGraphics(event.getModel());
+                addBulletGraphics((BulletModel) event.getModel());
                 break;
             default:
                 break;
@@ -76,19 +76,19 @@ public class LevelObjectGraphicsObserver implements ILevelObserver {
         }
     }
 
-    private void addTreeGraphics(ITreeModel treeModel) {
+    private void addTreeGraphics(TreeModel treeModel) {
         ITreeGraphics graphics = new TreeGraphics(treeModel, levelModel.getGroundLayer());
         treeGraphics.add(graphics);
         graphicsRegistry.put(treeModel, graphics);
     }
 
-    private void addPlayerTankGraphics(ITankModel tank) {
+    private void addPlayerTankGraphics(TankModel tank) {
         ITankGraphics graphics = tankGraphicsFactory.apply(tank);
         playerTankGraphics = graphics;
         graphicsRegistry.put(tank, graphics);
     }
 
-    private void addEnemyTankGraphics(ITankModel tank) {
+    private void addEnemyTankGraphics(TankModel tank) {
         ITankGraphics graphics = tankGraphicsFactory.apply(tank);
         enemyTankGraphics.add(graphics);
         graphicsRegistry.put(tank, graphics);

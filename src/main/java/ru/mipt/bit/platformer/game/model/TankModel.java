@@ -8,7 +8,7 @@ import static com.badlogic.gdx.math.MathUtils.isEqual;
 import static com.badlogic.gdx.math.MathUtils.random;
 import static ru.mipt.bit.platformer.util.GdxGameUtils.continueProgress;
 
-public class TankModel implements ITankModel {
+public class TankModel implements GameObject {
 
     private final GridPoint2 coordinates;
     private final GridPoint2 destination;
@@ -31,8 +31,7 @@ public class TankModel implements ITankModel {
         this.healthPoints = random(80, 100);
     }
 
-    @Override
-    public void attemptMove(Direction direction, Iterable<? extends ITreeModel> obstacles) {
+    public void attemptMove(Direction direction, Iterable<? extends BlockingObject> obstacles) {
         if (!isReadyForNextMove()) {
             this.direction = direction;
             rotation = direction.getRotation();
@@ -48,8 +47,8 @@ public class TankModel implements ITankModel {
         this.direction = direction;
     }
 
-    private boolean isBlocked(GridPoint2 candidate, Iterable<? extends ITreeModel> obstacles) {
-        for (ITreeModel obstacle : obstacles) {
+    private boolean isBlocked(GridPoint2 candidate, Iterable<? extends BlockingObject> obstacles) {
+        for (BlockingObject obstacle : obstacles) {
             if (obstacle.blocks(candidate)) {
                 return true;
             }
@@ -70,17 +69,14 @@ public class TankModel implements ITankModel {
         return coordinates;
     }
 
-    @Override
     public GridPoint2 getDestination() {
         return destination;
     }
 
-    @Override
     public float getMovementProgress() {
         return movementProgress;
     }
 
-    @Override
     public float getRotation() {
         return rotation;
     }
@@ -90,17 +86,14 @@ public class TankModel implements ITankModel {
         return texturePath;
     }
 
-    @Override
     public int getHealthPoints() {
         return healthPoints;
     }
 
-    @Override
     public Direction getDirection() {
         return direction;
     }
 
-    @Override
     public void applyDamage(int damage) {
         if (destroyed) {
             return;
@@ -111,7 +104,6 @@ public class TankModel implements ITankModel {
         }
     }
 
-    @Override
     public boolean isDestroyed() {
         return destroyed;
     }

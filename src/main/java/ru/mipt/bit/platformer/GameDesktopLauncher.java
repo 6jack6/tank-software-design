@@ -22,7 +22,7 @@ import ru.mipt.bit.platformer.game.level.FileLevelPopulationStrategy;
 import ru.mipt.bit.platformer.game.level.ILevelModel;
 import ru.mipt.bit.platformer.game.level.ILevelPopulationStrategy;
 import ru.mipt.bit.platformer.game.level.RandomLevelPopulationStrategy;
-import ru.mipt.bit.platformer.game.model.ITankModel;
+import ru.mipt.bit.platformer.game.model.TankModel;
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 
@@ -35,10 +35,10 @@ public class GameDesktopLauncher implements ApplicationListener {
     private Batch batch;
     private ILevelModel levelModel;
     private ILevelGraphics levelGraphics;
-    private ITankModel playerTank;
+    private TankModel playerTank;
     private ITankGraphics playerTankGraphics;
     private ITankInputHandler tankInputHandler;
-    private List<ITankModel> enemyTanks;
+    private List<TankModel> enemyTanks;
     private List<ITankGraphics> enemyTankGraphics;
     private List<ITankAIController> enemyControllers;
     private List<ITreeGraphics> obstacleGraphics;
@@ -84,7 +84,7 @@ public class GameDesktopLauncher implements ApplicationListener {
             tankGraphics.update();
         }
         playerTank.update(deltaTime);
-        for (ITankModel enemyTank : enemyTanks) {
+        for (TankModel enemyTank : enemyTanks) {
             enemyTank.update(deltaTime);
         }
         levelModel.update(deltaTime);
@@ -96,9 +96,6 @@ public class GameDesktopLauncher implements ApplicationListener {
 
         batch.begin();
         playerTankGraphics.render(batch);
-        for (ITankGraphics tankGraphics : enemyTankGraphics) {
-            tankGraphics.render(batch);
-        }
         for (ITankGraphics tankGraphics : enemyTankGraphics) {
             tankGraphics.render(batch);
         }

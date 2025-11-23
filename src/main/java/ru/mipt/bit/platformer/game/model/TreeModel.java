@@ -3,7 +3,7 @@ package ru.mipt.bit.platformer.game.model;
 import com.badlogic.gdx.math.GridPoint2;
 import ru.mipt.bit.platformer.config.TreeConfig;
 
-public class TreeModel implements ITreeModel {
+public class TreeModel implements GameObject, BlockingObject {
 
     private final GridPoint2 coordinates;
     private final String texturePath;
@@ -14,11 +14,6 @@ public class TreeModel implements ITreeModel {
     }
 
     @Override
-    public boolean blocks(GridPoint2 tileCoordinates) {
-        return coordinates.equals(tileCoordinates);
-    }
-
-    @Override
     public GridPoint2 getCoordinates() {
         return coordinates;
     }
@@ -26,5 +21,10 @@ public class TreeModel implements ITreeModel {
     @Override
     public String getTexturePath() {
         return texturePath;
+    }
+
+    @Override
+    public boolean blocks(GridPoint2 tileCoordinates) {
+        return coordinates.equals(tileCoordinates);
     }
 }
