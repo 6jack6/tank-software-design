@@ -4,8 +4,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.utils.Disposable;
 import java.util.List;
-import ru.mipt.bit.platformer.game.model.TankModel;
-import ru.mipt.bit.platformer.game.model.TreeModel;
+import ru.mipt.bit.platformer.game.model.GameObject;
 import ru.mipt.bit.platformer.util.TileMovement;
 
 public interface ILevelModel extends Disposable {
@@ -18,13 +17,13 @@ public interface ILevelModel extends Disposable {
 
     LevelModel.LevelBounds getBounds();
 
-    List<TreeModel> getTrees();
+    List<GameObject> getTrees();
 
-    List<TankModel> getEnemyTanks();
+    List<GameObject> getEnemyTanks();
 
-    TankModel getPlayerTank();
+    GameObject getPlayerTank();
 
-    List<TankModel> getAllTanks();
+    List<GameObject> getAllTanks();
 
     void update(float deltaTime);
 }

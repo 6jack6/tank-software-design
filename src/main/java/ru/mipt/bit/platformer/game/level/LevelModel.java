@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Objects;
 import ru.mipt.bit.platformer.config.LevelConfig;
 import ru.mipt.bit.platformer.game.model.BulletModel;
+import ru.mipt.bit.platformer.game.model.GameObject;
 import ru.mipt.bit.platformer.game.model.TankModel;
 import ru.mipt.bit.platformer.game.model.TreeModel;
 import ru.mipt.bit.platformer.util.TileMovement;
@@ -24,11 +25,11 @@ public class LevelModel implements ILevelModel {
     private final TileMovement tileMovement;
     private final LevelBounds bounds;
     private final List<ILevelObserver> observers = new ArrayList<>();
-    private final List<TreeModel> trees = new ArrayList<>();
-    private final List<TankModel> enemyTanks = new ArrayList<>();
-    private final List<BulletModel> bullets = new ArrayList<>();
+    private final List<GameObject> trees = new ArrayList<>();
+    private final List<GameObject> enemyTanks = new ArrayList<>();
+    private final List<GameObject> bullets = new ArrayList<>();
 
-    private TankModel playerTank;
+    private GameObject playerTank;
 
     public LevelModel(LevelConfig config) {
         map = new TmxMapLoader().load(config.getMapPath());
@@ -59,36 +60,41 @@ public class LevelModel implements ILevelModel {
         }
     }
 
-    public void addTree(TreeModel tree) {
-        trees.add(tree);
-        notifyAdded(LevelObjectType.TREE, tree);
+    public void addTree(GameObject tree) {
+        TreeModel treeModel = castModel(tree, TreeModel.class, "tree");
+        trees.add(treeModel);
+        notifyAdded(LevelObjectType.TREE, treeModel);
     }
 
-    public void addPlayerTank(TankModel tank) {
-        playerTank = tank;
-        notifyAdded(LevelObjectType.PLAYER_TANK, tank);
+    public void addPlayerTank(GameObject tank) {
+        TankModel tankModel = castModel(tank, TankModel.class, "player tank");
+        playerTank = tankModel;
+        notifyAdded(LevelObjectType.PLAYER_TANK, tankModel);
     }
 
-    public void addEnemyTank(TankModel tank) {
-        enemyTanks.add(tank);
-        notifyAdded(LevelObjectType.ENEMY_TANK, tank);
+    public void addEnemyTank(GameObject tank) {
+        TankModel tankModel = castModel(tank, TankModel.class, "enemy tank");
+        enemyTanks.add(tankModel);
+        notifyAdded(LevelObjectType.ENEMY_TANK, tankModel);
     }
 
-    public void removeTank(TankModel tank) {
+    public void removeTank(GameObject tank) {
         if (tank == null) {
             return;
         }
-        if (tank == playerTank) {
+        TankModel tankModel = castModel(tank, TankModel.class, "tank");
+        if (tankModel == playerTank) {
             playerTank = null;
-            notifyRemoved(LevelObjectType.PLAYER_TANK, tank);
-        } else if (enemyTanks.remove(tank)) {
-            notifyRemoved(LevelObjectType.ENEMY_TANK, tank);
+            notifyRemoved(LevelObjectType.PLAYER_TANK, tankModel);
+        } else if (enemyTanks.remove(tankModel)) {
+            notifyRemoved(LevelObjectType.ENEMY_TANK, tankModel);
         }
     }
 
-    public void addBullet(BulletModel bullet) {
-        bullets.add(bullet);
-        notifyAdded(LevelObjectType.BULLET, bullet);
+    public void addBullet(GameObject bullet) {
+        BulletModel bulletModel = castModel(bullet, BulletModel.class, "bullet");
+        bullets.add(bulletModel);
+        notifyAdded(LevelObjectType.BULLET, bulletModel);
     }
 
     @Override
@@ -112,23 +118,23 @@ public class LevelModel implements ILevelModel {
     }
 
     @Override
-    public List<TreeModel> getTrees() {
+    public List<GameObject> getTrees() {
         return Collections.unmodifiableList(trees);
     }
 
     @Override
-    public List<TankModel> getEnemyTanks() {
+    public List<GameObject> getEnemyTanks() {
         return Collections.unmodifiableList(enemyTanks);
     }
 
     @Override
-    public TankModel getPlayerTank() {
+    public GameObject getPlayerTank() {
         return playerTank;
     }
 
     @Override
-    public List<TankModel> getAllTanks() {
-        List<TankModel> result = new ArrayList<>(enemyTanks);
+    public List<GameObject> getAllTanks() {
+        List<GameObject> result = new ArrayList<>(enemyTanks);
         if (playerTank != null) {
             result.add(playerTank);
         }
@@ -137,8 +143,8 @@ public class LevelModel implements ILevelModel {
 
     @Override
     public void update(float deltaTime) {
-        for (Iterator<BulletModel> iterator = bullets.iterator(); iterator.hasNext();) {
-            BulletModel bullet = iterator.next();
+        for (Iterator<GameObject> iterator = bullets.iterator(); iterator.hasNext();) {
+            BulletModel bullet = (BulletModel) iterator.next();
             bullet.update(deltaTime);
             if (!bullet.isActive()) {
                 iterator.remove();
@@ -152,10 +158,14 @@ public class LevelModel implements ILevelModel {
     }
 
     public TankModel findTank(GridPoint2 coordinates) {
-        if (playerTank != null && playerTank.getCoordinates().equals(coordinates)) {
-            return playerTank;
+        if (playerTank != null) {
+            TankModel tank = (TankModel) playerTank;
+            if (tank.getCoordinates().equals(coordinates)) {
+                return tank;
+            }
         }
-        for (TankModel tank : enemyTanks) {
+        for (GameObject object : enemyTanks) {
+            TankModel tank = (TankModel) object;
             if (tank.getCoordinates().equals(coordinates)) {
                 return tank;
             }
@@ -164,10 +174,14 @@ public class LevelModel implements ILevelModel {
     }
 
     public TankModel findTankByDestination(GridPoint2 coordinates) {
-        if (playerTank != null && playerTank.getDestination().equals(coordinates)) {
-            return playerTank;
+        if (playerTank != null) {
+            TankModel tank = (TankModel) playerTank;
+            if (tank.getDestination().equals(coordinates)) {
+                return tank;
+            }
         }
-        for (TankModel tank : enemyTanks) {
+        for (GameObject object : enemyTanks) {
+            TankModel tank = (TankModel) object;
             if (tank.getDestination().equals(coordinates)) {
                 return tank;
             }
@@ -176,7 +190,8 @@ public class LevelModel implements ILevelModel {
     }
 
     public TreeModel findTree(GridPoint2 coordinates) {
-        for (TreeModel tree : trees) {
+        for (GameObject object : trees) {
+            TreeModel tree = (TreeModel) object;
             if (tree.getCoordinates().equals(coordinates)) {
                 return tree;
             }
@@ -185,7 +200,8 @@ public class LevelModel implements ILevelModel {
     }
 
     public BulletModel findBullet(GridPoint2 coordinates, BulletModel excluded) {
-        for (BulletModel bullet : bullets) {
+        for (GameObject object : bullets) {
+            BulletModel bullet = (BulletModel) object;
             if (bullet == excluded) {
                 continue;
             }
@@ -199,6 +215,16 @@ public class LevelModel implements ILevelModel {
     @Override
     public void dispose() {
         map.dispose();
+    }
+
+    private static <T> T castModel(GameObject object, Class<T> type, String name) {
+        if (object == null) {
+            throw new IllegalArgumentException(name + " must not be null");
+        }
+        if (!type.isInstance(object)) {
+            throw new IllegalArgumentException("Expected " + type.getSimpleName() + " for " + name);
+        }
+        return type.cast(object);
     }
 
     public static class LevelBounds {

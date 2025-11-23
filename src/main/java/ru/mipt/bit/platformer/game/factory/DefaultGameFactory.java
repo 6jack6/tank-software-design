@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.GridPoint2;
+import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -45,6 +46,7 @@ import ru.mipt.bit.platformer.game.level.LevelObjectEvent;
 import ru.mipt.bit.platformer.game.level.LevelObjectType;
 import ru.mipt.bit.platformer.game.level.LevelPopulation;
 import ru.mipt.bit.platformer.game.level.MovementObstacleProvider;
+import ru.mipt.bit.platformer.game.model.GameObject;
 import ru.mipt.bit.platformer.game.model.TankModel;
 import ru.mipt.bit.platformer.game.model.TreeModel;
 import ru.mipt.bit.platformer.util.Direction;
@@ -91,7 +93,7 @@ public class DefaultGameFactory implements IGameFactory {
             TankModel enemyTank = new TankModel(enemyConfig);
             levelModel.addEnemyTank(enemyTank);
         }
-        List<TankModel> enemyTanks = levelModel.getEnemyTanks();
+        List<TankModel> enemyTanks = castGameObjects(levelModel.getEnemyTanks(), TankModel.class);
 
         MovementObstacleProvider obstacleProvider = new MovementObstacleProvider(levelModel);
 
@@ -163,6 +165,22 @@ public class DefaultGameFactory implements IGameFactory {
         ITankGraphics baseGraphics = new TankGraphics(tank,
                 levelModel.getTileMovement(), levelModel.getGroundLayer());
         return new HealthIndicatorTankGraphics(baseGraphics, tank, visibility);
+    }
+
+    private static <T> List<T> castGameObjects(List<GameObject> objects, Class<T> type) {
+        Objects.requireNonNull(objects);
+        Objects.requireNonNull(type);
+        return Collections.unmodifiableList(new AbstractList<>() {
+            @Override
+            public T get(int index) {
+                return type.cast(objects.get(index));
+            }
+
+            @Override
+            public int size() {
+                return objects.size();
+            }
+        });
     }
 
     private List<GridPoint2> generateEnemySpawns(TiledMapTileLayer groundLayer,
